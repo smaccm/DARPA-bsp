@@ -53,9 +53,9 @@ void gpio_spi_can1_cs(const int enable)
 void gpio__init(void)
 {
     gpio_dev_debug("line: %d\n", __LINE__);
-    tegra_mux_init(gpio1base, pinmuxmisc, pinmuxaux, &tegra_mux );
+    tegra_mux_init(pinmuxmisc, pinmuxaux, &tegra_mux );
     gpio_dev_debug("line: %d\n", __LINE__);
-    tegra_gpio_sys_init(&tegra_mux, &gpio_sys);
+    gpio_init(gpio1base, &tegra_mux, &gpio_sys);
     gpio_new(&gpio_sys, CAN1_INTn, GPIO_DIR_IRQ_FALL, &i_spi_can_int);
     gpio_new(&gpio_sys, CAN1_CS, GPIO_DIR_OUT, &r_spi_can1_cs);
     gpio_new(&gpio_sys, CAN2_CS, GPIO_DIR_OUT, &r_spi_can2_cs);
