@@ -48,7 +48,7 @@ void mcp2515_reset(void)
     spi_dev->txbuf[0] = CMD_RESET;
     spi_transfer(DEV_ID, 1, 0);
     spi_lock_unlock();
-    printf("mcp2515 spi_transfer done\n");
+    mcp_debug("mcp2515 spi_transfer done\n");
 }
 
 /* Read register */
@@ -75,7 +75,7 @@ uint8_t mcp2515_read_reg(uint8_t reg)
 void mcp2515_read_nregs(uint8_t reg, int count, uint8_t *buf)
 {
     if (!buf) {
-        printf("Empty buffer!\n");
+        ZF_LOGE("Empty buffer!\n");
         return;
     }
 
@@ -112,7 +112,7 @@ void mcp2515_write_reg(uint8_t reg, uint8_t val)
 void mcp2515_write_nregs(uint8_t reg, uint8_t *buf, int count)
 {
     if (!buf) {
-        printf("Empty buffer!\n");
+        ZF_LOGE("Empty buffer!\n");
         return;
     }
 

@@ -54,7 +54,7 @@ void mcp2515_dumpstatus(uint8_t status)
 
 void can__init(void)
 {
-    printf("CAN device started...\n");
+    ZF_LOGD("CAN device started...\n");
 
     queue_lock_wait();
     mq_init(MSG_QUEUE_SIZE);

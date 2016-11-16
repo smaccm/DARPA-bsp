@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote fetch="." name="smaccm"/>
+  <remote fetch="../seL4" name="seL4"/>
+  <remote fetch="../SEL4PROJ" name="seL4-projects"/>
+
+  <default remote="seL4" revision="master"/>
+
+  <project name="camkes-tool.git" path="tools/camkes">
+    <linkfile dest="Makefile" src="toplevel.mk"/>
+    <linkfile dest="Kbuild" src="Kbuild"/>
+    <linkfile dest="libs/libsel4camkes" src="libsel4camkes"/>
+    <linkfile dest="libs/libsel4muslccamkes" src="libsel4muslccamkes"/>
+    <linkfile dest="README.md" src="docs/index.md"/>
+  </project>
+  <project name="capdl.git" path="projects/capdl">
+    <linkfile dest="apps/capdl-loader-experimental" src="capdl-loader-app"/>
+    <linkfile dest="tools/capDL" src="capDL-tool"/>
+    <linkfile dest="tools/python-capdl" src="python-capdl-tool"/>
+  </project>
+<project name="musllibc.git" path="libs/libmuslc" revision="sel4"/>
+  <project name="seL4.git" path="kernel">
+    <linkfile dest="libs/libsel4" src="libsel4"/>
+  </project>
+  <project name="seL4_libs.git" path="projects/seL4_libs">
+    <linkfile dest="libs/libsel4bench" src="libsel4bench"/>
+    <linkfile dest="libs/libsel4debug" src="libsel4debug"/>
+    <linkfile dest="libs/libsel4muslcsys" src="libsel4muslcsys"/>
+    <linkfile dest="libs/libsel4platsupport" src="libsel4platsupport"/>
+    <linkfile dest="libs/libsel4simple" src="libsel4simple"/>
+    <linkfile dest="libs/libsel4simple-default" src="libsel4simple-default"/>
+    <linkfile dest="libs/libsel4sync" src="libsel4sync"/>
+    <linkfile dest="libs/libsel4utils" src="libsel4utils"/>
+    <linkfile dest="libs/libsel4vka" src="libsel4vka"/>
+    <linkfile dest="libs/libsel4vspace" src="libsel4vspace"/>
+    <linkfile dest="libs/libsel4allocman" src="libsel4allocman"/>
+  </project>
+  <project name="seL4_tools.git" path="projects/seL4_tools">
+    <linkfile dest="tools/common" src="common-tool"/>
+    <linkfile dest="tools/elfloader" src="elfloader-tool"/>
+    <linkfile dest="tools/kbuild" src="kbuild-tool"/>
+  </project>
+
+  <project name="DARPA-bsp.git" path="apps/DARPA" remote="smaccm">
+    <linkfile dest="configs" src="configs"/>
+    <linkfile dest="Kconfig" src="toplevelKconfig"/>
+  </project>
+  <project name="util_libs.git" path="projects/util_libs">
+    <linkfile dest="libs/libcpio" src="libcpio"/>
+    <linkfile dest="libs/libelf" src="libelf"/>
+    <linkfile dest="libs/libplatsupport" src="libplatsupport"/>
+    <linkfile dest="libs/libutils" src="libutils"/>
+  </project>
+</manifest>

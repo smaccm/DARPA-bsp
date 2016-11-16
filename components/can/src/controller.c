@@ -301,7 +301,7 @@ void enable_rollover(void)
 void set_rx_mode(int rxb_idx, rxm_mode_t mode)
 {
     if (rxb_idx > 1) {
-        printf("CAN: Invalid RXB%d\n", rxb_idx);
+        ZF_LOGE("CAN: Invalid RXB%d\n", rxb_idx);
         return;
     }
 
