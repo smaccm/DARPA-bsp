@@ -41,9 +41,10 @@
     <linkfile dest="tools/kbuild" src="kbuild-tool"/>
   </project>
 
-  <project name="DARPA-bsp.git" path="apps/DARPA" remote="smaccm">
+  <project name="DARPA-bsp.git" path="projects/DARPA" remote="smaccm">
     <linkfile dest="configs" src="configs"/>
-    <linkfile dest="Kconfig" src="toplevelKconfig"/>
+    <linkfile dest="Kconfig" src="Kconfig"/>
+    <linkfile dest="apps/can-test" src="apps/can-test"/> 
   </project>
   <project name="util_libs.git" path="projects/util_libs">
     <linkfile dest="libs/libcpio" src="libcpio"/>

@@ -12,11 +12,12 @@
 
 import <std_connector.camkes>;
 
-import "components/spi/spi.camkes";
+import <spi/spi.camkes>;
+import <can/can.camkes>;
+import <gpio/gpio.camkes>;
+import <clkcar/clkcar.camkes>;
+
 import "components/canbus/canbus.camkes";
-import "components/can/can.camkes";
-import "components/gpio/gpio.camkes";
-import "components/clkcar/clkcar.camkes";
 import "components/tk1_uart/tk1_uart.camkes";
 import "components/tk1_uart_test/tk1_uart_test.camkes";
 
