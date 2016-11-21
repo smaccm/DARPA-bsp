@@ -9,8 +9,10 @@
  *
  * @TAG(D61_BSD)
  */
-import "../../interfaces/uart.idl4";
-import "../../interfaces/clkcar.idl4";
+import <uart.idl4>;
+import <clkcar.idl4>;
+//import "../../interfaces/uart.idl4";
+//import "../../interfaces/clkcar.idl4";
 
 component tk1_uart_test {
     control;
