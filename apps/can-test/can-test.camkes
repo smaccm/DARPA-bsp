@@ -56,7 +56,7 @@ assembly {
 
 
         /* software components */
-        component spi spi_obj;
+        component spi       spi_obj;
         component canbus    canbus_obj;
         component can       can_obj;
         component gpio      gpio_obj;

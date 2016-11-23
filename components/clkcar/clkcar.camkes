@@ -14,6 +14,6 @@ import <gpio.idl4>;
 import <can.idl4>;
 
 component clkcar {
-    provides  clkcar_inf 	clkcar;
+    provides  clkcar_inf  clkcar;
     dataport  Buf         clkcar_reg;
 }

@@ -16,19 +16,20 @@
 #define N_ITERATIONS (128)
 #define TEST_XOR_MAGIC  (0x20)
 
-const char *msg="Big fleas have little fleas\n"
-    "Upon their backs to bite 'em.\n"
-    "And little fleas have smaller fleas;\n"
-    "And so on, ad infinitum.\n";
+const char *msg = "Big fleas have little fleas\n"
+                  "Upon their backs to bite 'em.\n"
+                  "And little fleas have smaller fleas;\n"
+                  "And so on, ad infinitum.\n";
 
 /* Listens for incoming data on UARTB. Then writes a poem out in response. */
-int run(void) {
+int run(void)
+{
     int status;
 
     ZF_LOGE("UART-tests: Here in main.\n");
 
     uintptr_t buffpos = 0;
-    for (int i=1; i<N_ITERATIONS + 1; i++) {
+    for (int i = 1; i < N_ITERATIONS + 1; i++) {
         while (buffpos < i) {
             /* Listen for data */
             status = tk1_uart_read(TK1_UARTB, 2048);

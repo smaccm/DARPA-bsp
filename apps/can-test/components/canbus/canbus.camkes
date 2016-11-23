@@ -14,8 +14,8 @@ import <can.idl4>;
 component canbus {
     control;
     uses     can_inf   can;
-    dataport Buf	     spi1_client;
-    dataport Buf	     can_buf;
+    dataport Buf       spi1_client;
+    dataport Buf       can_buf;
 
     consumes txb0_ack  txb0_ack;
     consumes txb1_ack  txb1_ack;

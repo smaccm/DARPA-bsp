@@ -202,7 +202,7 @@ clkcar_uart_clk_init(int id)
     /* UART-D isn't used, and because it's held by the kernel, so we don't
      * expose it.
      */
-    switch(id) {
+    switch (id) {
     case TK1_UARTA:
         clock_uarta_init();
         break;

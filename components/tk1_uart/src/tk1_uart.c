@@ -76,19 +76,19 @@ tk1_uart_write(int uart_num, int nbytes)
 
         clkcar_uart_clk_init(uart_num);
         cdevs[uart_num].pinst = ps_cdev_init(uart_num,
-                                                 /* tk1_uart_regs is the MMIO
-                                                  * mapping dataport.
-                                                  */
-                                                 &tk1_uart_io_ops,
-                                                 &cdevs[uart_num].inst);
+                                             /* tk1_uart_regs is the MMIO
+                                              * mapping dataport.
+                                              */
+                                             &tk1_uart_io_ops,
+                                             &cdevs[uart_num].inst);
         if (cdevs[uart_num].pinst == NULL) {
             return -1;
         }
     }
 
     ret = ps_cdev_write(cdevs[uart_num].pinst,
-                 (void *)cdevs[uart_num].tx_shmem_buff, nbytes,
-                 NULL, NULL);
+                        (void *)cdevs[uart_num].tx_shmem_buff, nbytes,
+                        NULL, NULL);
 
     tk1_uart_state_mtx_unlock();
     return ret;
@@ -117,19 +117,19 @@ tk1_uart_read(int uart_num, int nbytes)
     if (cdevs[uart_num].pinst == NULL) {
         clkcar_uart_clk_init(uart_num);
         cdevs[uart_num].pinst = ps_cdev_init(uart_num,
-                                                 /* tk1_uart_regs is the MMIO
-                                                  * mapping dataport.
-                                                  */
-                                                 &tk1_uart_io_ops,
-                                                 &cdevs[uart_num].inst);
+                                             /* tk1_uart_regs is the MMIO
+                                              * mapping dataport.
+                                              */
+                                             &tk1_uart_io_ops,
+                                             &cdevs[uart_num].inst);
         if (cdevs[uart_num].pinst == NULL) {
             return -1;
         }
     }
 
     ret = ps_cdev_read(cdevs[uart_num].pinst,
-                (void *)cdevs[uart_num].rx_shmem_buff, nbytes,
-                NULL, NULL);
+                       (void *)cdevs[uart_num].rx_shmem_buff, nbytes,
+                       NULL, NULL);
 
     tk1_uart_state_mtx_unlock();
     return ret;
