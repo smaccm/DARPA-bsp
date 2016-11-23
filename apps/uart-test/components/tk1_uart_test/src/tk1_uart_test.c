@@ -16,12 +16,7 @@
 #define N_ITERATIONS (128)
 #define TEST_XOR_MAGIC  (0x20)
 
-const char *msg = "Big fleas have little fleas\n"
-                  "Upon their backs to bite 'em.\n"
-                  "And little fleas have smaller fleas;\n"
-                  "And so on, ad infinitum.\n";
-
-/* Listens for incoming data on UARTB. Then writes a poem out in response. */
+/* Listens for incoming data on UARTB, modifies and returns it in response. */
 int run(void)
 {
     int status;
