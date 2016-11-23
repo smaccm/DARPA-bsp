@@ -10,8 +10,7 @@
  * @TAG(D61_BSD)
  */
 
-//import <uart.idl4>;
-import "../../interfaces/uart.idl4";
+import <uart.idl4>;
 
 component tk1_uart {
     /* Public to client: procedural interface. */

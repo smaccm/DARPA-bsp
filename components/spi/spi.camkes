@@ -8,9 +8,9 @@
  * @TAG(D61_BSD)
  */
 
-import "../../interfaces/spi.idl4";
-import "../../interfaces/gpio.idl4";
-import "../../interfaces/clkcar.idl4";
+import <spi.idl4>;
+import <gpio.idl4>;
+import <clkcar.idl4>;
 
 component spi {
     uses     gpio_inf       gpio;

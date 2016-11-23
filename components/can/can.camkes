@@ -8,8 +8,8 @@
  * @TAG(D61_BSD)
  */
 
-import "../../interfaces/spi.idl4";
-import "../../interfaces/can.idl4";
+import <spi.idl4>;
+import <can.idl4>;
 
 component can {
    	provides   can_inf     can;

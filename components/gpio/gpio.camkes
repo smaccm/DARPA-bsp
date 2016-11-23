@@ -8,8 +8,8 @@
  * @TAG(D61_BSD)
  */
 
-import "../../interfaces/gpio.idl4";
-import "../../interfaces/can.idl4";
+import <gpio.idl4>;
+import <can.idl4>;
 
 component gpio {
     provides  gpio_inf 		    gpio;
