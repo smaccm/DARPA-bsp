@@ -1,3 +1,4 @@
+<!--
 #
 # Copyright 2016, Data61
 # Commonwealth Scientific and Industrial Research Organisation (CSIRO)
@@ -7,6 +8,7 @@
 # See "LICENSE_BSD2.txt" for details.
 # @TAG(D61_BSD)
 #
+-->
 
 CAmkES components and tests for SMACCM phase 3 on TK1-SOM.
 Runs a CAN server that prints out received CAN messages and then
