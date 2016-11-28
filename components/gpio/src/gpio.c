@@ -24,14 +24,14 @@ gpio_t r_spi_can1_cs;
 gpio_t r_spi_can2_cs;
 gpio_sys_t gpio_sys;
 
-static void
-irq_grp5_event(void* arg)
+void irq_grp5_int_handle(void)
 {
     if (gpio_is_pending(&i_spi_can_int)) {
         gpio_pending_clear(&i_spi_can_int);
         CAN1Int_emit();
     }
-    irq_grp5_int_reg_callback(&irq_grp5_event, NULL);
+
+    irq_grp5_int_acknowledge();
 }
 
 void gpio_spi_can1_cs(const int enable)

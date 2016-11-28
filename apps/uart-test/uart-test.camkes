@@ -69,13 +69,18 @@ assembly {
 
     configuration {
 
-        clkcarbase_obj.clkcar_reg_attributes  = "0x60006000:0x1000";
+        clkcarbase_obj.clkcar_reg_paddr = 0x60006000;
+        clkcarbase_obj.clkcar_reg_size = 0x1000;
 
         /* UART hardware attributes .*/
-        tk1_uartbase_obj.tk1_uart_regs_attributes = "0x70006000:0x1000";
-        tk1_uartbase_obj.tk1_uarta_irq_attributes = 68;
-        tk1_uartbase_obj.tk1_uartb_irq_attributes = 69;
-        tk1_uartbase_obj.tk1_uartc_irq_attributes = 78;
-        tk1_uartbase_obj.tk1_uartd_irq_attributes = 122;
+        tk1_uartbase_obj.tk1_uart_regs_paddr = 0x70006000;
+        tk1_uartbase_obj.tk1_uart_regs_size = 0x1000;
+
+        /* These irq numbers aren't used by this application, but are included
+         * as a reference. */
+        tk1_uartbase_obj.tk1_uarta_irq_irq_number = 68;
+        tk1_uartbase_obj.tk1_uartb_irq_irq_number = 69;
+        tk1_uartbase_obj.tk1_uartc_irq_irq_number = 78;
+        tk1_uartbase_obj.tk1_uartd_irq_irq_number = 122;
     }
 }

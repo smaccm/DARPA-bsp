@@ -25,7 +25,7 @@
 #define DEV_ID CAN_APP_ID
 static spi_dev_port_t *spi_dev = NULL;
 
-void spi__init(void)
+void pre_init(void)
 {
     spi_dev = (spi_dev_port_t *)spi_can;
 }
