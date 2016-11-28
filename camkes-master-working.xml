@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote fetch="../seL4" name="seL4"/>
+  <remote fetch="../SEL4PROJ" name="seL4-projects"/>
+  <remote fetch="." name="smaccm"/>
+  
+  <default remote="seL4" revision="master"/>
+  
+  <project name="DARPA-bsp.git" path="projects/DARPA" remote="smaccm" revision="a3fa336ec57475b571fbdf9cfb7999f0e10835d5" upstream="master">
+    <linkfile dest="configs" src="configs"/>
+    <linkfile dest="Kconfig" src="Kconfig"/>
+    <linkfile dest="apps/uart-test" src="apps/uart-test"/>
+    <linkfile dest="apps/can-test" src="apps/can-test"/>
+  </project>
+  <project name="camkes-tool.git" path="tools/camkes" revision="447f4bcf527e64fcda63e713c3c7e13800682afb" upstream="master">
+    <linkfile dest="Makefile" src="toplevel.mk"/>
+    <linkfile dest="Kbuild" src="Kbuild"/>
+    <linkfile dest="libs/libsel4camkes" src="libsel4camkes"/>
+    <linkfile dest="libs/libsel4muslccamkes" src="libsel4muslccamkes"/>
+    <linkfile dest="README.md" src="docs/index.md"/>
+  </project>
+  <project name="capdl.git" path="projects/capdl" revision="2267eec98efb5176ec09b60269691e32d3cd8e0b" upstream="master">
+    <linkfile dest="apps/capdl-loader-experimental" src="capdl-loader-app"/>
+    <linkfile dest="tools/capDL" src="capDL-tool"/>
+    <linkfile dest="tools/python-capdl" src="python-capdl-tool"/>
+  </project>
+  <project name="musllibc.git" path="libs/libmuslc" revision="3f280f52366fa88744df826a357a72a9fb6e4198" upstream="sel4"/>
+  <project name="seL4.git" path="kernel" revision="d73d0e8f05bde6cfd9327b1071a7d3c5e8080dd7" upstream="master">
+    <linkfile dest="libs/libsel4" src="libsel4"/>
+  </project>
+  <project name="seL4_libs.git" path="projects/seL4_libs" revision="0d27ee117b75ae0fa3b3028a5bfce4b15dc595a9" upstream="master">
+    <linkfile dest="libs/libsel4bench" src="libsel4bench"/>
+    <linkfile dest="libs/libsel4debug" src="libsel4debug"/>
+    <linkfile dest="libs/libsel4muslcsys" src="libsel4muslcsys"/>
+    <linkfile dest="libs/libsel4platsupport" src="libsel4platsupport"/>
+    <linkfile dest="libs/libsel4simple" src="libsel4simple"/>
+    <linkfile dest="libs/libsel4simple-default" src="libsel4simple-default"/>
+    <linkfile dest="libs/libsel4sync" src="libsel4sync"/>
+    <linkfile dest="libs/libsel4utils" src="libsel4utils"/>
+    <linkfile dest="libs/libsel4vka" src="libsel4vka"/>
+    <linkfile dest="libs/libsel4vspace" src="libsel4vspace"/>
+    <linkfile dest="libs/libsel4allocman" src="libsel4allocman"/>
+  </project>
+  <project name="seL4_tools.git" path="projects/seL4_tools" revision="dda905fa66dd37c0de06a69b3fd1d180dd29656f" upstream="master">
+    <linkfile dest="tools/common" src="common-tool"/>
+    <linkfile dest="tools/elfloader" src="elfloader-tool"/>
+    <linkfile dest="tools/kbuild" src="kbuild-tool"/>
+  </project>
+  <project name="util_libs.git" path="projects/util_libs" revision="44684b5857fabeeed512fa008e0cfddb34cb3fcd" upstream="master">
+    <linkfile dest="libs/libcpio" src="libcpio"/>
+    <linkfile dest="libs/libelf" src="libelf"/>
+    <linkfile dest="libs/libplatsupport" src="libplatsupport"/>
+    <linkfile dest="libs/libutils" src="libutils"/>
+  </project>
+</manifest>
