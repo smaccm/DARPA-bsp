@@ -39,7 +39,7 @@ static sync_spinlock_t txb_lock = 0;
  */
 static void report_message_error(void)
 {
-    ZF_LOGD("%s\n", __func__);
+    ZF_LOGD("Reporting message error");
     op_mode_t mode;
 
     mode = get_mode();

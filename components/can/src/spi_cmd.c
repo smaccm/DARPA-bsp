@@ -22,12 +22,6 @@
 #include "mcp2515.h"
 #include "spi_inf.h"
 
-#define mcp_debug(fmt, args...) \
-do { \
-    ZF_LOGD( A_FG_R "%s: " A_FG_RESET, __func__); \
-    ZF_LOGD( fmt, ##args); \
-    ZF_LOGD("\n"); \
-} while(0)
 #define DEV_ID CAN_APP_ID
 static spi_dev_port_t *spi_dev = NULL;
 
@@ -42,13 +36,12 @@ void spi__init(void)
 void mcp2515_reset(void)
 {
 
-    mcp_debug("line: %d CMD_RESET, spi_transfer(DEV_ID, 1, 0)\n", __LINE__);
+    ZF_LOGD("CMD_RESET, spi_transfer(DEV_ID, 1, 0)");
     spi_lock_lock();
-
     spi_dev->txbuf[0] = CMD_RESET;
     spi_transfer(DEV_ID, 1, 0);
     spi_lock_unlock();
-    mcp_debug("mcp2515 spi_transfer done\n");
+    ZF_LOGD("mcp2515 spi_transfer done");
 }
 
 /* Read register */
@@ -56,7 +49,7 @@ uint8_t mcp2515_read_reg(uint8_t reg)
 {
     uint8_t ret;
 
-    mcp_debug("line: %d CMD_READ, spi_transfer(DEV_ID, 2, 1)\n", __LINE__);
+    ZF_LOGD("CMD_READ, spi_transfer(DEV_ID, 2, 1)\n");
     spi_lock_lock();
 
     spi_dev->txbuf[0] = CMD_READ;
@@ -79,7 +72,7 @@ void mcp2515_read_nregs(uint8_t reg, int count, uint8_t *buf)
         return;
     }
 
-    mcp_debug("line: %d CMD_READ, spi_transfer(DEV_ID, 2, %d)\n", __LINE__, count);
+    ZF_LOGD("CMD_READ, spi_transfer(DEV_ID, 2, %d)", count);
     spi_lock_lock();
 
     spi_dev->txbuf[0] = CMD_READ;
@@ -96,7 +89,7 @@ void mcp2515_read_nregs(uint8_t reg, int count, uint8_t *buf)
 void mcp2515_write_reg(uint8_t reg, uint8_t val)
 {
 
-    mcp_debug("line: %d CMD_WRITE, spi_transfer(DEV_ID, 3, 0)\n",  __LINE__);
+    ZF_LOGD("CMD_WRITE, spi_transfer(DEV_ID, 3, 0)");
     spi_lock_lock();
 
     spi_dev->txbuf[0] = CMD_WRITE;
@@ -112,11 +105,11 @@ void mcp2515_write_reg(uint8_t reg, uint8_t val)
 void mcp2515_write_nregs(uint8_t reg, uint8_t *buf, int count)
 {
     if (!buf) {
-        ZF_LOGE("Empty buffer!\n");
+        ZF_LOGE("Empty buffer!");
         return;
     }
 
-    mcp_debug("line: %d CMD_WRITE, spi_transfer(DEV_ID, 2 + %d, 0)\n", __LINE__, count);
+    ZF_LOGD("CMD_WRITE, spi_transfer(DEV_ID, 2 + %d, 0)", count);
     spi_lock_lock();
 
     spi_dev->txbuf[0] = CMD_WRITE;
@@ -139,7 +132,7 @@ void mcp2515_write_nregs(uint8_t reg, uint8_t *buf, int count)
 void mcp2515_bit_modify(uint8_t reg, uint8_t mask, uint8_t val)
 {
 
-    mcp_debug("line: %d CMD_BIT_MODIFY, spi_transfer(DEV_ID, 4, 0)\n",  __LINE__) ;
+    ZF_LOGD("CMD_BIT_MODIFY, spi_transfer(DEV_ID, 4, 0)") ;
     spi_lock_lock();
 
     spi_dev->txbuf[0] = CMD_BIT_MODIFY;
@@ -172,7 +165,7 @@ uint8_t mcp2515_read_status(void)
 {
     uint8_t ret;
 
-    mcp_debug("line: %d CMD_READ_STATUS, spi_transfer(DEV_ID, 1, 1)\n",  __LINE__) ;
+    ZF_LOGD("CMD_READ_STATUS, spi_transfer(DEV_ID, 1, 1)") ;
 
     spi_lock_lock();
 
@@ -221,7 +214,7 @@ uint8_t mcp2515_rx_status(void)
 {
     uint8_t ret;
 
-    mcp_debug(" line: %d CMD_RX_STATUS, spi_transfer(DEV_ID, 1, 1)\n", __LINE__) ;
+    ZF_LOGD("CMD_RX_STATUS, spi_transfer(DEV_ID, 1, 1)") ;
     spi_lock_lock();
 
     spi_dev->txbuf[0] = CMD_RX_STATUS;
@@ -243,7 +236,7 @@ uint8_t mcp2515_rx_status(void)
 void mcp2515_rts(uint8_t mask)
 {
 
-    mcp_debug("line: %d CMD_RTS | 0x%20x, spi_transfer(DEV_ID, 1, 0)\n", __LINE__, mask) ;
+    ZF_LOGD("CMD_RTS | 0x%20x, spi_transfer(DEV_ID, 1, 0)", mask) ;
     spi_lock_lock();
 
     spi_dev->txbuf[0] = CMD_RTS | mask;
@@ -271,11 +264,11 @@ void mcp2515_load_txb(uint8_t *buf, uint8_t len, uint8_t idx, uint8_t flag)
     uint8_t mask = (idx * 2) | flag;
 
 
-    mcp_debug(" line: %d CMD_LOAD_TXB | 0x%02x, spi_transfer(DEV_ID, %d + 1, 0)\n", __LINE__, mask, len) ;
-    mcp_debug("buf[0]: 0x%02x buf[1]: 0x%02x buf[2]: 0x%02x buf[3]: 0x%02x\n", buf[0], buf[1], buf[2], buf[3]);
-    mcp_debug("buf[4]: 0x%02x buf[5]: 0x%02x buf[6]: 0x%02x buf[7]: 0x%02x\n", buf[4], buf[5], buf[6], buf[7]);
-    mcp_debug("buf[8]: 0x%02x buf[9]: 0x%02x buf[10]: 0x%02x buf[11]: 0x%02x\n", buf[8], buf[9], buf[10], buf[11]);
-    mcp_debug("buf[12]: 0x%02x buf[13]: 0x%02x buf[14]: 0x%02x buf[15]: 0x%02x\n", buf[12], buf[13], buf[14], buf[15]);
+    ZF_LOGD("CMD_LOAD_TXB | 0x%02x, spi_transfer(DEV_ID, %d + 1, 0)", mask, len) ;
+    ZF_LOGD("buf[0]: 0x%02x buf[1]: 0x%02x buf[2]: 0x%02x buf[3]: 0x%02x", buf[0], buf[1], buf[2], buf[3]);
+    ZF_LOGD("buf[4]: 0x%02x buf[5]: 0x%02x buf[6]: 0x%02x buf[7]: 0x%02x", buf[4], buf[5], buf[6], buf[7]);
+    ZF_LOGD("buf[8]: 0x%02x buf[9]: 0x%02x buf[10]: 0x%02x buf[11]: 0x%02x", buf[8], buf[9], buf[10], buf[11]);
+    ZF_LOGD("buf[12]: 0x%02x buf[13]: 0x%02x buf[14]: 0x%02x buf[15]: 0x%02x", buf[12], buf[13], buf[14], buf[15]);
 
     spi_lock_lock();
 
@@ -284,7 +277,7 @@ void mcp2515_load_txb(uint8_t *buf, uint8_t len, uint8_t idx, uint8_t flag)
 
     /* Buffer length plus one byte instruction. */
     spi_transfer(DEV_ID, len + 1, 0);
-    mcp_debug("line: %d spi_transfer done\n");
+    ZF_LOGD("spi_transfer done");
     spi_lock_unlock();
 }
 
@@ -304,7 +297,7 @@ void mcp2515_read_rxb(uint8_t *buf, uint8_t len, uint8_t idx, uint8_t flag)
      * If the low bit is set, address points to RX buffer's data register.
      */
     uint8_t mask = 0;
-    mcp_debug(" line: %d CMD_READ_RXB | 0x%02x, spi_transfer(DEV_ID, 1, %d)\n",  __LINE__, mask, len) ;
+    ZF_LOGD("CMD_READ_RXB | 0x%02x, spi_transfer(DEV_ID, 1, %d)\n", mask, len) ;
     spi_lock_lock();
 
     spi_dev->txbuf[0] = CMD_READ_RXB | mask;

@@ -20,9 +20,6 @@
 #include <utils/zf_log.h>
 
 
-
-#define SPI_CAMKES_FUNC_NAME A_FG_M "%s: " A_FG_RESET
-
 #define SPI_PORT          SPI0
 #define SPI_SPEED_DEFAULT 10000000
 
@@ -104,10 +101,10 @@ static void
 spi_complete_callback(spi_bus_t* bus, int status, void* token)
 {
     *(int*)token = status;
-    ZF_LOGD( SPI_CAMKES_FUNC_NAME "line: %d\n", __func__, __LINE__);
+    ZF_LOGD("Posting to bus semaphore");
     bus_sem_post();
 
-    ZF_LOGD( SPI_CAMKES_FUNC_NAME "line: %d\n", __func__, __LINE__);
+    ZF_LOGD("Posted to bus semaphore");
 }
 
 /**
@@ -117,7 +114,7 @@ void
 spi_irq_event(void *arg UNUSED)
 {
     spi_mutex_lock();
-    ZF_LOGD( SPI_CAMKES_FUNC_NAME "line: %d \n", __func__, __LINE__);
+    ZF_LOGD("Handling spi irq event");
     spi_handle_irq(spi_bus);
     spi_mutex_unlock();
     spi1_int_reg_callback(&spi_irq_event, NULL);
@@ -134,7 +131,7 @@ spi__init(void)
     err = tegra_spi_init(SPI_PORT, spi1_reg, NULL, &clock_sys, &spi_bus);
     assert(!err);
     if (err) {
-        LOG_ERROR("Failed to initialise SPI port\n");
+        ZF_LOGE("Failed to initialise SPI port");
         return;
     }
 
@@ -159,19 +156,19 @@ do_spi_transfer(const struct spi_slave* slave, void* txbuf, unsigned int wcount,
         spi_prepare_transfer(spi_bus, &slave->cfg);
         cur_slave_id = slave->id;
     }
-    ZF_LOGD( SPI_CAMKES_FUNC_NAME "line: %d about to call chip_select()\n", __func__, __LINE__);
+    ZF_LOGD("About to call chip_select()");
     chip_select(spi_bus, SPI_CS_ASSERT);
-    ZF_LOGD( SPI_CAMKES_FUNC_NAME "chip select done\n", __func__, __LINE__);
+    ZF_LOGD("Chip select done");
     /* Begin the transfer */
     spi_mutex_lock();
     ret = spi_xfer(spi_bus, txbuf, wcount, rxbuf, rcount, spi_complete_callback, &status);
     spi_mutex_unlock();
-    ZF_LOGD( SPI_CAMKES_FUNC_NAME "spi_xfer done line: %d\n", __func__, __LINE__);
+    ZF_LOGD("spi_xfer done");
     if (ret >= 0) {
         bus_sem_wait();
         ret = status;
     }
-    ZF_LOGD( SPI_CAMKES_FUNC_NAME " line: %d\n", __func__, __LINE__);
+    ZF_LOGD("Releasing chip select");
     chip_select(spi_bus, SPI_CS_RELEASE);
     return ret;
 }
@@ -194,10 +191,10 @@ spi_transfer(int id, unsigned int wcount, unsigned int rcount)
         return -1;
     }
     fflush(stdout);
-    ZF_LOGD( SPI_CAMKES_FUNC_NAME "line: %d id: %d \n", __func__, __LINE__, id);
+    ZF_LOGD("id: %d\n", id);
     fflush(stdout);
     if (99 == id) {
-        ZF_LOGD( SPI_CAMKES_FUNC_NAME "line: %d id: 99 \n", __func__, __LINE__);
+        ZF_LOGD("id: 99\n");
         do_spi_transfer(slave, loopback_tx, 14, (*slave->port)->rxbuf, rcount);
     }
     /* Transfer the data from the shared data port */

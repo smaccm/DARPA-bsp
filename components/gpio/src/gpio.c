@@ -18,13 +18,6 @@
 #include <camkes.h>
 
 
-#define gpio_dev_debug(fmt, args...) \
-    do { \
-           ZF_LOGD( A_BG_C "  %s: " A_BG_RESET, __func__); \
-           ZF_LOGD( fmt, ##args); \
-           ZF_LOGD("\n"); \
-    } while(0)
-
 mux_sys_t tegra_mux;
 gpio_t i_spi_can_int;
 gpio_t r_spi_can1_cs;
@@ -44,24 +37,22 @@ irq_grp5_event(void* arg)
 void gpio_spi_can1_cs(const int enable)
 {
     if (enable) {
-        gpio_dev_debug("line: %d\n", __LINE__);
+        ZF_LOGD("Enabling chip select");
         gpio_set(&r_spi_can1_cs);
     } else {
-        gpio_dev_debug("line: %d\n", __LINE__);
+        ZF_LOGD("Disabling chip select");
         gpio_clr(&r_spi_can1_cs);
     }
 }
 
 void gpio__init(void)
 {
-    gpio_dev_debug("line: %d\n", __LINE__);
+    ZF_LOGD("Initialising mux");
     tegra_mux_init(pinmuxmisc, pinmuxaux, &tegra_mux );
-    gpio_dev_debug("line: %d\n", __LINE__);
+    ZF_LOGD("Mux initialised\nInitialising gpio");
     gpio_init(gpio1base, &tegra_mux, &gpio_sys);
     gpio_new(&gpio_sys, CAN1_INTn, GPIO_DIR_IRQ_FALL, &i_spi_can_int);
     gpio_new(&gpio_sys, CAN1_CS, GPIO_DIR_OUT, &r_spi_can1_cs);
     gpio_new(&gpio_sys, CAN2_CS, GPIO_DIR_OUT, &r_spi_can2_cs);
-    gpio_dev_debug("line: %d\n", __LINE__);
-    irq_grp5_int_reg_callback(&irq_grp5_event, NULL);
-    gpio_dev_debug("line: %d\n", __LINE__);
+    ZF_LOGD("Gpio initialised");
 }
