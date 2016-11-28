@@ -74,7 +74,7 @@ int can_setup(int baudrate)
     set_baudrate(baudrate);
     enable_intrrupt();
 
-//	enable_rollover();
+    // enable_rollover();
     set_rx_mode(0, RXM_ANY);
     set_mode(REQOP_NORMAL);
 

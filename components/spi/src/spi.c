@@ -56,12 +56,12 @@ struct spi_slave {
 #define SLAVE_PARAMS(i, p, s, d, f, g)  \
         {                               \
             .id = i,                    \
-            .port = (spi_dev_port_t**)p, \
-	    .cs = g,                    \
+            .port = (spi_dev_port_t**)p,\
+            .cs = g,                    \
             .cfg = {                    \
                 .speed_hz = s,          \
                 .nss_udelay = d,        \
-	        .fb_delay = f           \
+                .fb_delay = f           \
              }                          \
         }
 

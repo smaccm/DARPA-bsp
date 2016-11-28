@@ -14,15 +14,15 @@ import <gpio.idl4>;
 import <can.idl4>;
 
 component gpio {
-    provides  gpio_inf        gpio;
-    uses      can_inf         can;
+    provides gpio_inf gpio;
+    uses can_inf can;
 
-    dataport  Buf             gpio1base;
-    dataport  Buf             pinmuxmisc;
-    dataport  Buf             pinmuxaux;
+    dataport Buf gpio1base;
+    dataport Buf pinmuxmisc;
+    dataport Buf pinmuxaux;
 
-    emits     IntEvent	      CAN1Int;
-    consumes  DataAvailable   EINT14;
-    consumes  IntEventAck     CANIntAck;
-    consumes  IRQGroup5       irq_grp5_int;
+    emits IntEvent CAN1Int;
+    maybe consumes DataAvailable EINT14;
+    maybe consumes IntEventAck CANIntAck;
+    consumes IRQGroup5 irq_grp5_int;
 }
