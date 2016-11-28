@@ -15,7 +15,7 @@
 #include <can_inf.h>
 #include <utils/ansi.h>
 #include <utils/zf_log.h>
-#include <gpio.h>
+#include <camkes.h>
 
 
 #define gpio_dev_debug(fmt, args...) \

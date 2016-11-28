@@ -17,7 +17,7 @@
 #include <utils/ansi.h>
 #include <platsupport/delay.h>
 
-#include "canbus.h"
+#include <camkes.h>
 
 /* application common */
 #include "can_inf.h"

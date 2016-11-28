@@ -14,7 +14,7 @@
 #include <platsupport/spi.h>
 #include <platsupport/gpio.h>
 #include <string.h>
-#include <spi.h>
+#include <camkes.h>
 #include <errno.h>
 #include <utils/ansi.h>
 #include <utils/zf_log.h>

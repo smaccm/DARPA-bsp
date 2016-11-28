@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <clkcar.h>
+#include <camkes.h>
 #include <utils/zf_log.h>
 #include <utils/arith.h>
 #include <platsupport/plat/serial.h>

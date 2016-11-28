@@ -52,7 +52,7 @@
 #include "can_inf.h"
 #include "mcp2515.h"
 
-#include "can.h"
+#include <camkes.h>
 
 
 #define can_controller_debug(fmt, args...) \

@@ -19,7 +19,7 @@
 #include "mcp2515.h"
 #include <queue.h>
 
-#include "can.h"
+#include <camkes.h>
 
 
 #define TXIF_MASK (CANINTF_TX0IF | CANINTF_TX1IF | CANINTF_TX2IF)

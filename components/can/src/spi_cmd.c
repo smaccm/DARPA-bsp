@@ -18,7 +18,7 @@
 #include <utils/ansi.h>
 #include <utils/zf_log.h>
 #include <sync/spinlock.h>
-#include "can.h"
+#include <camkes.h>
 #include "mcp2515.h"
 #include "spi_inf.h"
 

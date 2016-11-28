@@ -16,7 +16,7 @@
 #include <mcp2515.h>
 #include <queue.h>
 
-#include <can.h>
+#include <camkes.h>
 
 #define ZF_LOG_LEVEL ZF_LOG_DEBUG
 
