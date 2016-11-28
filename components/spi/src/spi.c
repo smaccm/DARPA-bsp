@@ -190,10 +190,9 @@ spi_transfer(int id, unsigned int wcount, unsigned int rcount)
     if (slave == NULL) {
         return -1;
     }
-    fflush(stdout);
     ZF_LOGD("id: %d\n", id);
-    fflush(stdout);
     if (99 == id) {
+        // FIXME why is this a special case?
         ZF_LOGD("id: 99\n");
         do_spi_transfer(slave, loopback_tx, 14, (*slave->port)->rxbuf, rcount);
     }
