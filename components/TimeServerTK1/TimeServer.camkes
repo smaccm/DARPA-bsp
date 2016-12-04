@@ -1,0 +1,43 @@
+/*
+ * Copyright 2014, NICTA
+ *
+ * This software may be distributed and modified according to the terms of
+ * the GNU General Public License version 2. Note that NO WARRANTY is provided.
+ * See "LICENSE_GPLv2.txt" for details.
+ *
+ * @TAG(NICTA_GPL)
+ */
+
+import <std_connector.camkes>;
+
+import <TimeServerNVTMR/TimeServerNVTMR.camkes>;
+
+/* There are 10 timers available.  Arbitrarily pick one.
+ * see libs/libplatsupport/plat_include/tk1/platsupport/plat/timer.h 
+ */
+#define TIMER_PADDR "0x60005000:0x1000" /* NV_TMR_PADDR:NV_TMR_SIZE */
+#define TIMER_NUM 5 /* nv_tmr_id_t TMR5 */
+#define TIMER_IRQ 153 /* INT_NV_TMR5 */
+
+component TimeServerTK1 {
+    provides Timer the_timer;
+    emits Notification timer_notification;
+    
+    composition {
+        component timerbase timer_hw;
+        component TimeServerNVTMR time_server;
+
+        connection seL4HardwareMMIO timer_mem (from time_server.timer_reg, to timer_hw.timer_reg);
+        connection seL4HardwareInterrupt timer_1_irq (from timer_hw.irq, to time_server.irq);
+
+        connection ExportRPC export_timer(from the_timer, to time_server.the_timer);
+        connection ExportAsynch export_timer_notify(from time_server.timer_notification, to timer_notification);
+    }
+    configuration {
+        timer_hw.timer_reg_attributes = TIMER_PADDR;  
+        timer_hw.irq_attributes = TIMER_IRQ;  
+	time_server.nvtmr_number = TIMER_NUM; 
+        time_server.timers_per_client = 6;
+    }
+}
+
