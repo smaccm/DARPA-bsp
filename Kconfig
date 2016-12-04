@@ -43,6 +43,7 @@ menu "Applications"
     source "apps/capdl-loader-experimental/Kconfig"
     source "apps/uart-test/Kconfig"
     source "apps/can-test/Kconfig"
+    source "apps/timer_tk1/Kconfig"
 endmenu
 
 source "tools/camkes/Kconfig"

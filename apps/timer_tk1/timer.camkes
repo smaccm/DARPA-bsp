@@ -1,0 +1,38 @@
+/*
+ * Copyright 2014, NICTA
+ *
+ * This software may be distributed and modified according to the terms of
+ * the GNU General Public License version 2. Note that NO WARRANTY is provided.
+ * See "LICENSE_GPLv2.txt" for details.
+ *
+ * @TAG(NICTA_GPL)
+ */
+
+import <TimeServerTK1/TimeServer.camkes>;
+import <TimeClient/TimeClient.camkes>;
+
+assembly {
+    composition {
+        /* Our client component */
+        component TimeClient client;
+	component TimeClient client2;
+        /* The timer component */
+        component TimeServerTK1 timer;
+
+        /* Connect client to the timer server */
+        connection seL4TimeServer client_timer(from client.timer, to timer.the_timer);
+        connection seL4GlobalAsynchCallback client_int(from timer.timer_notification, to client.timer_complete);
+        connection seL4TimeServer client2_timer(from client2.timer, to timer.the_timer);
+        connection seL4GlobalAsynchCallback client2_int(from timer.timer_notification, to client2.timer_complete);
+    }
+    configuration {
+        client.timer_attributes = "7";
+        client.timer_global_endpoint = "client_timer";
+        client.timer_complete_global_endpoint = "client_timer";
+        client.msg = "Client 1";
+        client2.timer_attributes = "10";
+        client2.timer_global_endpoint = "client_timer";
+        client2.timer_complete_global_endpoint = "client_timer";
+        client2.msg = "Client 2";
+    }
+}

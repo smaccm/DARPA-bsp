@@ -1,0 +1,15 @@
+#
+# Copyright 2014, NICTA
+#
+# This software may be distributed and modified according to the terms of
+# the GNU General Public License version 2. Note that NO WARRANTY is provided.
+# See "LICENSE_GPLv2.txt" for details.
+#
+# @TAG(NICTA_GPL)
+#
+
+menuconfig APP_TIMER_TK1
+    bool "TK1 Timer test application"
+    default n
+    help 
+        Application to test the TimeServer component on TK1.
