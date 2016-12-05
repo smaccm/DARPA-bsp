@@ -8,14 +8,14 @@
  * @TAG(NICTA_GPL)
  */
 
-#include <TimeClient.h>
+#include <camkes.h>
 
 void post_init()
 {
     /* timeout once a second */
     int ret;
     ret = timer_periodic(0, 1000000000);
-    printf("periodic timer started\n");
+    printf("%s periodic timer started\n", msg);
 }
 
 void timer_complete_callback()

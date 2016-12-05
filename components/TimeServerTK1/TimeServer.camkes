@@ -15,7 +15,8 @@ import <TimeServerNVTMR/TimeServerNVTMR.camkes>;
 /* There are 10 timers available.  Arbitrarily pick one.
  * see libs/libplatsupport/plat_include/tk1/platsupport/plat/timer.h 
  */
-#define TIMER_PADDR "0x60005000:0x1000" /* NV_TMR_PADDR:NV_TMR_SIZE */
+#define TIMER_PADDR 0x60005000 /* NV_TMR_PADDR */
+#define TIMER_PADDR_SIZE 0x1000 /* NV_TMR_SIZE */
 #define TIMER_NUM 5 /* nv_tmr_id_t TMR5 */
 #define TIMER_IRQ 153 /* INT_NV_TMR5 */
 
@@ -30,12 +31,14 @@ component TimeServerTK1 {
         connection seL4HardwareMMIO timer_mem (from time_server.timer_reg, to timer_hw.timer_reg);
         connection seL4HardwareInterrupt timer_1_irq (from timer_hw.irq, to time_server.irq);
 
-        connection ExportRPC export_timer(from the_timer, to time_server.the_timer);
-        connection ExportAsynch export_timer_notify(from time_server.timer_notification, to timer_notification);
+        export time_server.the_timer -> the_timer;
+        export time_server.timer_notification -> timer_notification;
+
     }
     configuration {
-        timer_hw.timer_reg_attributes = TIMER_PADDR;  
-        timer_hw.irq_attributes = TIMER_IRQ;  
+        timer_hw.timer_reg_paddr = TIMER_PADDR;
+        timer_hw.timer_reg_size = TIMER_PADDR_SIZE;  
+        timer_hw.irq_irq_number = TIMER_IRQ;  
 	time_server.nvtmr_number = TIMER_NUM; 
         time_server.timers_per_client = 6;
     }

@@ -19,20 +19,18 @@ assembly {
         /* The timer component */
         component TimeServerTK1 timer;
 
-        /* Connect client to the timer server */
-        connection seL4TimeServer client_timer(from client.timer, to timer.the_timer);
-        connection seL4GlobalAsynchCallback client_int(from timer.timer_notification, to client.timer_complete);
-        connection seL4TimeServer client2_timer(from client2.timer, to timer.the_timer);
-        connection seL4GlobalAsynchCallback client2_int(from timer.timer_notification, to client2.timer_complete);
+        /* Connect clients to the timer server */
+        connection seL4TimeServer client_timer(from client.timer, from client2.timer, to timer.the_timer);
+        connection seL4GlobalAsynchCallback client_int(from timer.timer_notification, to client.timer_complete, to client2.timer_complete);
     }
     configuration {
-        client.timer_attributes = "7";
+        client.timer_attributes = 10;
         client.timer_global_endpoint = "client_timer";
         client.timer_complete_global_endpoint = "client_timer";
-        client.msg = "Client 1";
-        client2.timer_attributes = "10";
+        client.msg = "Client 1 (next)";
+        client2.timer_attributes = 7;
         client2.timer_global_endpoint = "client_timer";
         client2.timer_complete_global_endpoint = "client_timer";
-        client2.msg = "Client 2";
+        client2.msg = "Client 2 (next)";
     }
 }

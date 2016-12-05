@@ -13,13 +13,13 @@ import <std_connector.camkes>;
 import <Timer.idl4>;
 
 connector seL4TimeServer {
-    from Procedure client template "seL4TimeServer-from.template.c";
-    to Procedure server template "seL4TimeServer-to.template.c";
+    from Procedures template "seL4TimeServer-from.template.c";
+    to Procedure template "seL4TimeServer-to.template.c";
 }
 
 connector seL4GlobalAsynchCallback {
-    from Event notifier template "seL4GlobalAsynchCallback-from.template.c";
-    to Event server template "seL4GlobalAsynchCallback-to.template.c";
+    from Event template "seL4GlobalAsynchCallback-from.template.c";
+    to Events template "seL4GlobalAsynchCallback-to.template.c";
 }
 
 component timerbase {

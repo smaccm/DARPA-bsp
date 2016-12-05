@@ -12,7 +12,7 @@ TARGETS := $(notdir ${SOURCE_DIR}).cdl
 ADL := timer.camkes
 
 # Subdirectory containing extra templates.
-TEMPLATES := templates
+TEMPLATES := templates/global-templates templates/darpa-templates
 
 include TimeServerTK1/TimeServer.mk
 include TimeClient/TimeClient.mk
