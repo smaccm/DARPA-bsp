@@ -1,0 +1,38 @@
+/*
+ * Copyright 2016, Data61
+ * Commonwealth Scientific and Industrial Research Organisation (CSIRO)
+ * ABN 41 687 119 230.
+ *
+ * This software may be distributed and modified according to the terms of
+ * the BSD 2-Clause license. Note that NO WARRANTY is provided.
+ * See "LICENSE_BSD2.txt" for details.
+ *
+ * @TAG(D61_BSD)
+ */
+
+import <uart.idl4>;
+import <clkcar.idl4>;
+
+component tk1_uart_test_client {
+    control;
+    uses uart_inf tk1_uart;
+    maybe uses clkcar_inf clkcar;
+
+    maybe consumes tk1_uart_rx_ind uarta_rx_done;
+    maybe consumes tk1_uart_rx_ind uartb_rx_done;
+    maybe consumes tk1_uart_rx_ind uartc_rx_done;
+    maybe consumes tk1_uart_rx_ind uartd_rx_done;
+
+    maybe consumes tk1_uart_tx_ack uarta_tx_done;
+    maybe consumes tk1_uart_tx_ack uartb_tx_done;
+    maybe consumes tk1_uart_tx_ack uartc_tx_done;
+    maybe consumes tk1_uart_tx_ack uartd_tx_done;
+
+    dataport Buf tk1_uarta_rx_buff;
+    dataport Buf tk1_uartb_rx_buff;
+    dataport Buf tk1_uartc_rx_buff;
+
+    dataport Buf tk1_uarta_tx_buff;
+    dataport Buf tk1_uartb_tx_buff;
+    dataport Buf tk1_uartc_tx_buff;
+}
