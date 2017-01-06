@@ -26,7 +26,7 @@
 seL4_Word the_timer_get_sender_id();
 
 /* Frequency of timer interrupts that we use for processing timeouts */
-#define TIMER_FREQUENCY 1000000 // once per microsecond
+#define TIMER_FREQUENCY 1000 // once per millisecond
 #define TIMER_PERIOD (NS_IN_S / TIMER_FREQUENCY)
 
 static pstimer_t *timer = NULL;

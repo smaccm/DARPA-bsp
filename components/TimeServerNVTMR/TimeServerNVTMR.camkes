@@ -13,7 +13,7 @@ import <std_connector.camkes>;
 import <Timer.idl4>;
 
 connector seL4TimeServer {
-    from Procedures template "seL4TimeServer-from.template.c";
+    from Procedures template "seL4TimeServer-from.template.c" with 0 threads;
     to Procedure template "seL4TimeServer-to.template.c";
 }
 
