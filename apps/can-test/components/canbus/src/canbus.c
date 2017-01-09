@@ -52,81 +52,49 @@ int run(void)
     error = txb2_ack_reg_callback(txb2_ack_callback, NULL);
 
     /* Initialize CAN controller. */
-    printf( A_FG_B "Start CAN Test\n" A_FG_RESET );
+    printf("Start CAN Test\n");
     can_setup(125000);
 
     /* Prepare CAN frame. */
-    tx.ident.id = 0x123;
+    tx.ident.id = 0x200;
     tx.ident.exide = 0;
     tx.ident.rtr = 0;
     tx.dlc = 8;
-#if 0
-    tx.data[0] = 0x08;
-    tx.data[1] = 0x07;
-    tx.data[2] = 0x06;
-    tx.data[3] = 0x05;
-    tx.data[4] = 0x04;
-    tx.data[5] = 0x03;
-    tx.data[6] = 0x02;
-    tx.data[7] = 0x01;
-#endif
-    tx.data[0] = 0x01;
-    tx.data[1] = 0x02;
-    tx.data[2] = 0x03;
-    tx.data[3] = 0xDE;
-    tx.data[4] = 0xAD;
-    tx.data[5] = 0xBE;
-    tx.data[6] = 0xEF;
-    tx.data[7] = 0x08;
+    tx.data[0] = 0xBC;
+    tx.data[1] = 0x22;
+    tx.data[2] = 0x00;
+    tx.data[3] = 0x9a;
+    tx.data[4] = 0x00;
+    tx.data[5] = 0x00;
+    tx.data[6] = 0x00;
+    tx.data[7] = 0x00;
 
-    tx1.ident.id = 0x321;
-    tx1.ident.exide = 0;
-    tx1.ident.rtr = 0;
-    tx1.dlc = 8;
+    printf("Requesting packed status\n");
+    for (int i = 0; i < 10; i++) {
+        error = can_sendto(0, tx);
+        printf("Sent: error(%d), id(%x), data(%x, %x, %x, %x, %x, %x, %x, %x)\n",
+               error, tx.ident.id,
+               tx.data[0], tx.data[1], tx.data[2], tx.data[3],
+               tx.data[4], tx.data[5], tx.data[6], tx.data[7]);
 
-    tx1.data[0] = 0xA1;
-    tx1.data[1] = 0xB2;
-    tx1.data[2] = 0xC3;
-    tx1.data[3] = 0xDE;
-    tx1.data[4] = 0xEA;
-    tx1.data[5] = 0xFE;
-    tx1.data[6] = 0x1F;
-    tx1.data[7] = 0x28;
+        tx.ident.id++;
+        tx.data[0] = 0x00;
+        tx.data[1] = 0x00;
+        tx.data[2] = 0x00;
+        tx.data[3] = 0x00;
+        tx.data[4] = 0x00;
+        tx.data[5] = 0x00;
+        tx.data[6] = 0x00;
+        tx.data[7] = 0x00;
+    }
 
-    int sendcount = 0;
-
-    error = 0;
-
-    printf( A_FG_B "starting canbus loop.....\n" A_FG_RESET );
     while (1) {
-        /* Send message */
-        tx.ident.id = 0x300;
-
-        if (sendcount < 10) {
-            printf( A_FG_B  "Sending Can data: %d\n" A_FG_RESET, __LINE__ );
-            error = can_sendto(0, tx);
-            sendcount++;
-        }
-        if (error) {
-            printf( A_FG_B  "Start CAN line: %d\n" A_FG_RESET, __LINE__ );
-            can_abort(0);
-            printf( A_FG_B "Send error: 0\n" A_FG_RESET );
-            printf( A_FG_B  "Start CAN line: %d\n" A_FG_RESET, __LINE__ );
-        }
         /* Receive message */
         can_recv(&rx);
         printf("Recv: error(%d), id(%x), data(%x, %x, %x, %x, %x, %x, %x, %x)\n",
                error, rx.ident.id,
                rx.data[0], rx.data[1], rx.data[2], rx.data[3],
                rx.data[4], rx.data[5], rx.data[6], rx.data[7]);
-
-        ps_udelay(999999);
-        printf( A_FG_B  "sleep done line: %d\n" A_FG_RESET, __LINE__ );
-
-        if (sendcount < 10) {
-            error = can_sendto(0, tx1);
-            sendcount++;
-        }
     }
 
     return 0;
