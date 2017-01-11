@@ -45,6 +45,7 @@
     <linkfile dest="configs" src="configs"/>
     <linkfile dest="Kconfig" src="Kconfig"/>
     <linkfile dest="apps/uart-test" src="apps/uart-test"/> 
+    <linkfile dest="apps/uart-test-client" src="apps/uart-test-client"/> 
     <linkfile dest="apps/can-test" src="apps/can-test"/> 
     <linkfile dest="apps/timer_tk1" src="apps/timer_tk1"/> 
   </project>

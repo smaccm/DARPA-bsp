@@ -71,7 +71,7 @@ void clkcar_spi_clk_init(void)
     /* Set input clock and divisor */
     uint32_t clk_source_spi_reg = *(volatile uint32_t*)(local_clkcar_reg + CLK_RST_CONTROLLER_CLK_SOURCE_SPI1_0_OFFSET);
     clk_source_spi_reg |= (6 << CLK_RST_CONTROLLER_CLK_SOURCE_SHIFT);
-    clk_source_spi_reg |= 190;
+    clk_source_spi_reg |= 1;
     *(volatile uint32_t*)(local_clkcar_reg + CLK_RST_CONTROLLER_CLK_SOURCE_SPI1_0_OFFSET) = clk_source_spi_reg;
 
     /*Enable SPI controller */
@@ -197,19 +197,19 @@ clock_uartc_init(void)
 int
 clkcar_uart_clk_init(int id)
 {
-    assert(id >= TK1_UARTA && id < TK1_UARTD);
+    assert(id >= TK1_UARTA_ASYNC && id < TK1_UARTD_ASYNC);
 
     /* UART-D isn't used, and because it's held by the kernel, so we don't
      * expose it.
      */
     switch (id) {
-    case TK1_UARTA:
+    case TK1_UARTA_ASYNC:
         clock_uarta_init();
         break;
-    case TK1_UARTB:
+    case TK1_UARTB_ASYNC:
         clock_uartb_init();
         break;
-    default: /* TK1_UARTC */
+    default: /* TK1_UARTC_ASYNC */
         clock_uartc_init();
         break;
     }
