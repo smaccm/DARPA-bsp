@@ -27,7 +27,25 @@ component tk1_uart {
     /* Private to driver: MMIO reg mapping. */
     dataport Buf tk1_uart_regs;
     /* Private to driver: mutexes */
-    has mutex tk1_uart_state_mtx;
+    has mutex tk1_uarta_state_mtx;
+    has mutex tk1_uartb_state_mtx;
+    has mutex tk1_uartc_state_mtx;
+
+    /* Private to driver: synchronizing mutexes. These turn asynchronous API
+     * calls into synchronous API calls.
+     */
+    has mutex tk1_uarta_write_sync_mtx;
+    has mutex tk1_uartb_write_sync_mtx;
+    has mutex tk1_uartc_write_sync_mtx;
+
+    has mutex tk1_uarta_read_sync_mtx;
+    has mutex tk1_uartb_read_sync_mtx;
+    has mutex tk1_uartc_read_sync_mtx;
+
+    /* Private to driver: IRQs. */
+    maybe consumes uart_thr_rbr_irq tk1_uarta_irq;
+    maybe consumes uart_thr_rbr_irq tk1_uartb_irq;
+    maybe consumes uart_thr_rbr_irq tk1_uartc_irq;
 
     /* Uses the Clkcar component to set up UART clocks. */
     uses clkcar_inf clkcar;

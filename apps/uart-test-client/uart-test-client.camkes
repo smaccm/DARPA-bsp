@@ -15,7 +15,7 @@ import <std_connector.camkes>;
 import <clkcar/clkcar.camkes>;
 import <tk1_uart/tk1_uart.camkes>;
 
-import "components/tk1_uart_test/tk1_uart_test.camkes";
+import "components/tk1_uart_test_client/tk1_uart_test_client.camkes";
 
 component clkcarbase {
     hardware;
@@ -30,6 +30,7 @@ component tk1_uart_dev {
     emits uart_thr_rbr_irq tk1_uarta_irq;
     emits uart_thr_rbr_irq tk1_uartb_irq;
     emits uart_thr_rbr_irq tk1_uartc_irq;
+    emits uart_thr_rbr_irq tk1_uartd_irq;
 }
 
 assembly {
@@ -43,25 +44,25 @@ assembly {
         component clkcar    clkcar_obj;
         /* UART component and tests */
         component tk1_uart  tk1_uart_obj;
-        component tk1_uart_test test_fn;
+        component tk1_uart_test_client test_client_fn;
 
         connection seL4HardwareMMIO clkcar_mem (from clkcar_obj.clkcar_reg, to clkcarbase_obj.clkcar_reg);
 
         /* UART MMIO dataport */
         connection seL4HardwareMMIO tk1_uart_mmio (from tk1_uart_obj.tk1_uart_regs, to tk1_uartbase_obj.tk1_uart_regs);
         /* Test component's connections to the UART's component */
-        connection seL4RPCCall test_fn_to_tk1_uart_uart_inf (from test_fn.tk1_uart, to tk1_uart_obj.tk1_uart);
+        connection seL4RPCCall test_client_fn_to_tk1_uart_uart_inf (from test_client_fn.tk1_uart, to tk1_uart_obj.tk1_uart);
         /* UART component's connection to the clock controller component */
         connection seL4RPCCall tk1_uart_to_clkcar_clkcar_inf (from tk1_uart_obj.clkcar, to clkcar_obj.clkcar);
         /* Test component's shmem dataport connections to UARTA dataport */
-        connection seL4SharedData test_fn_to_tk1_uarta_tx (from test_fn.tk1_uarta_tx_buff, to tk1_uart_obj.tk1_uarta_tx_buff);
-        connection seL4SharedData test_fn_to_tk1_uarta_rx (from test_fn.tk1_uarta_rx_buff, to tk1_uart_obj.tk1_uarta_rx_buff);
+        connection seL4SharedData test_client_fn_to_tk1_uarta_tx (from test_client_fn.tk1_uarta_tx_buff, to tk1_uart_obj.tk1_uarta_tx_buff);
+        connection seL4SharedData test_client_fn_to_tk1_uarta_rx (from test_client_fn.tk1_uarta_rx_buff, to tk1_uart_obj.tk1_uarta_rx_buff);
         /* Test component's shmem dataport connections to UARTB dataport */
-        connection seL4SharedData test_fn_to_tk1_uartb_tx (from test_fn.tk1_uartb_tx_buff, to tk1_uart_obj.tk1_uartb_tx_buff);
-        connection seL4SharedData test_fn_to_tk1_uartb_rx (from test_fn.tk1_uartb_rx_buff, to tk1_uart_obj.tk1_uartb_rx_buff);
+        connection seL4SharedData test_client_fn_to_tk1_uartb_tx (from test_client_fn.tk1_uartb_tx_buff, to tk1_uart_obj.tk1_uartb_tx_buff);
+        connection seL4SharedData test_client_fn_to_tk1_uartb_rx (from test_client_fn.tk1_uartb_rx_buff, to tk1_uart_obj.tk1_uartb_rx_buff);
         /* Test component's shmem dataport connections to UARTC dataport */
-        connection seL4SharedData test_fn_to_tk1_uartc_tx (from test_fn.tk1_uartc_tx_buff, to tk1_uart_obj.tk1_uartc_tx_buff);
-        connection seL4SharedData test_fn_to_tk1_uartc_rx (from test_fn.tk1_uartc_rx_buff, to tk1_uart_obj.tk1_uartc_rx_buff);
+        connection seL4SharedData test_client_fn_to_tk1_uartc_tx (from test_client_fn.tk1_uartc_tx_buff, to tk1_uart_obj.tk1_uartc_tx_buff);
+        connection seL4SharedData test_client_fn_to_tk1_uartc_rx (from test_client_fn.tk1_uartc_rx_buff, to tk1_uart_obj.tk1_uartc_rx_buff);
         /* We don't expose UARTD because that's what the kernel uses. */
         /* UART IRQs */
         connection seL4HardwareInterrupt tk1_uarta_irq_event (

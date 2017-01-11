@@ -9,6 +9,8 @@
  *
  * @TAG(D61_BSD)
  */
+#define ZF_LOG_LEVEL ZF_LOG_VERBOSE
+#include <utils/zf_log.h>
 
 /* standard */
 #include <stdio.h>
@@ -22,6 +24,9 @@
 /* application common */
 #include "can_inf.h"
 #include "spi_inf.h"
+
+
+// #define CAN_TEST_REPLY
 
 
 void txb0_ack_callback(void *arg)
@@ -91,7 +96,7 @@ int run(void)
     while (1) {
         /* Receive message */
         can_recv(&rx);
-        printf("Recv: error(%d), id(%x), data(%x, %x, %x, %x, %x, %x, %x, %x)\n",
+        ZF_LOGV("Recv: error(%d), id(%x), data(%x, %x, %x, %x, %x, %x, %x, %x)\n",
                error, rx.ident.id,
                rx.data[0], rx.data[1], rx.data[2], rx.data[3],
                rx.data[4], rx.data[5], rx.data[6], rx.data[7]);

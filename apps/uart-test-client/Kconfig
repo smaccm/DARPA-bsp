@@ -1,0 +1,17 @@
+#
+# Copyright 2016, Data61
+# Commonwealth Scientific and Industrial Research Organisation (CSIRO)
+# ABN 41 687 119 230.
+# This software may be distributed and modified according to the terms of
+# the BSD 2-Clause license. Note that NO WARRANTY is provided.
+# See "LICENSE_BSD2.txt" for details.
+# @TAG(D61_BSD)
+#
+
+config APP_UARTTEST_CLIENT
+    bool "DARPA CAmkES UART client test application"
+    default n
+    help
+        A simple application to test UART functionality for DARPA SMACCM phase 3 on TK1.
+        Acts as the client component in a client-server test between two TK1s running
+        CAmkES/seL4.

@@ -27,11 +27,22 @@ gpio_sys_t gpio_sys;
 void irq_grp5_int_handle(void)
 {
     if (gpio_is_pending(&i_spi_can_int)) {
-        gpio_pending_clear(&i_spi_can_int);
+
         CAN1Int_emit();
+    } else {
+      gpio_pending_clear(&i_spi_can_int);
+      irq_grp5_int_acknowledge();
+
     }
 
-    irq_grp5_int_acknowledge();
+}
+
+void CANIntAck_handler(void *arg UNUSED)
+{
+  CANIntAck_reg_callback(CANIntAck_handler, NULL);
+  gpio_pending_clear(&i_spi_can_int);
+  irq_grp5_int_acknowledge();
+
 }
 
 void gpio_spi_can1_cs(const int enable)
@@ -47,6 +58,8 @@ void gpio_spi_can1_cs(const int enable)
 
 void gpio__init(void)
 {
+    CANIntAck_reg_callback(CANIntAck_handler, NULL);
+
     ZF_LOGD("Initialising mux");
     tegra_mux_init(pinmuxmisc, pinmuxaux, &tegra_mux );
     ZF_LOGD("Mux initialised\nInitialising gpio");
