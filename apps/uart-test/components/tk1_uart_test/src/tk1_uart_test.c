@@ -35,6 +35,7 @@ read_fixed_length(char *inbuff, int uart_id, size_t buffsize, size_t n_chars_to_
 {
     ssize_t n_chars_read = 0;
 
+    int count = 0;
     for (; n_chars_read < n_chars_to_read; ) {
         ssize_t status = 0;
 
@@ -46,7 +47,10 @@ read_fixed_length(char *inbuff, int uart_id, size_t buffsize, size_t n_chars_to_
 
         memcpy(&inbuff[n_chars_read], (void *)tk1_uartb_rx_buff, status);
         n_chars_read += status;
+        count++;
     }
+
+    printf("Average read size: %d/%d = %f\n", n_chars_read, count, 1.0 * n_chars_read / count);
 
     return n_chars_read;
 }
@@ -60,7 +64,9 @@ int run(void)
     while (true) {
         switch (server_behaviour) {
         case 0:
-            server_echo_incrementing(N_ITERATIONS, true);
+            while (true) {
+                server_echo_incrementing(N_ITERATIONS, true);
+            }
             break;
         case 1:
             /* Takes anything as input, echoes a poem in response. */
