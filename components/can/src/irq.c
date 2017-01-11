@@ -14,6 +14,8 @@
 #include <stdio.h>
 
 #include <sync/spinlock.h>
+
+#define ZF_LOG_LEVEL ZF_LOG_VERBOSE
 #include <utils/zf_log.h>
 
 #include "mcp2515.h"
@@ -221,6 +223,8 @@ static void irq_handler(void *arg UNUSED)
     }
 
     Int_reg_callback(irq_handler, NULL);
+    IntAck_emit();
+
 }
 
 /**

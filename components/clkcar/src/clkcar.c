@@ -71,7 +71,7 @@ void clkcar_spi_clk_init(void)
     /* Set input clock and divisor */
     uint32_t clk_source_spi_reg = *(volatile uint32_t*)(local_clkcar_reg + CLK_RST_CONTROLLER_CLK_SOURCE_SPI1_0_OFFSET);
     clk_source_spi_reg |= (6 << CLK_RST_CONTROLLER_CLK_SOURCE_SHIFT);
-    clk_source_spi_reg |= 190;
+    clk_source_spi_reg |= 1;
     *(volatile uint32_t*)(local_clkcar_reg + CLK_RST_CONTROLLER_CLK_SOURCE_SPI1_0_OFFSET) = clk_source_spi_reg;
 
     /*Enable SPI controller */
