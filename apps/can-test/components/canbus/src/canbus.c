@@ -17,50 +17,16 @@
 #include <string.h>
 #include <stdbool.h>
 #include <utils/ansi.h>
-#include <platsupport/delay.h>
 
 #include <camkes.h>
 
-/* application common */
 #include "can_inf.h"
-#include "spi_inf.h"
 
+void request_status() {
+    ZF_LOGI("Request phase");
 
-// #define CAN_TEST_REPLY
+    struct can_frame tx;
 
-
-void txb0_ack_callback(void *arg)
-{
-    txb0_ack_reg_callback(txb0_ack_callback, NULL);
-    printf("%s\n", __func__);
-}
-
-void txb1_ack_callback(void *arg)
-{
-    txb1_ack_reg_callback(txb1_ack_callback, NULL);
-    printf("%s\n", __func__);
-}
-
-void txb2_ack_callback(void *arg)
-{
-    txb2_ack_reg_callback(txb2_ack_callback, NULL);
-    printf("%s\n", __func__);
-}
-
-int run(void)
-{
-    struct can_frame tx, tx1, rx;
-    int error = 0;
-
-    error = txb0_ack_reg_callback(txb0_ack_callback, NULL);
-    error = txb1_ack_reg_callback(txb1_ack_callback, NULL);
-    error = txb2_ack_reg_callback(txb2_ack_callback, NULL);
-
-    /* Initialize CAN controller. */
-    printf("Start CAN Test\n");
-    can_setup(125000);
-
-    /* Prepare CAN frame. */
     tx.ident.id = 0x200;
     tx.ident.exide = 0;
     tx.ident.rtr = 0;
@@ -74,13 +40,14 @@ int run(void)
     tx.data[6] = 0x00;
     tx.data[7] = 0x00;
 
-    printf("Requesting packed status\n");
     for (int i = 0; i < 10; i++) {
-        error = can_sendto(0, tx);
-        printf("Sent: error(%d), id(%x), data(%x, %x, %x, %x, %x, %x, %x, %x)\n",
-               error, tx.ident.id,
-               tx.data[0], tx.data[1], tx.data[2], tx.data[3],
-               tx.data[4], tx.data[5], tx.data[6], tx.data[7]);
+        int error = can_sendto(0, tx);
+        txb0_ack_wait();
+
+        ZF_LOGV("Sent: error(%d), id(%x), data(%x, %x, %x, %x, %x, %x, %x, %x)",
+                error, tx.ident.id,
+                tx.data[0], tx.data[1], tx.data[2], tx.data[3],
+                tx.data[4], tx.data[5], tx.data[6], tx.data[7]);
 
         tx.ident.id++;
         tx.data[0] = 0x00;
@@ -92,14 +59,30 @@ int run(void)
         tx.data[6] = 0x00;
         tx.data[7] = 0x00;
     }
+}
 
-    while (1) {
-        /* Receive message */
+void read_status() {
+    ZF_LOGI("Response phase");
+
+    for (int i = 0; i < 10; i++) {
+        struct can_frame rx;
         can_recv(&rx);
-        ZF_LOGV("Recv: error(%d), id(%x), data(%x, %x, %x, %x, %x, %x, %x, %x)\n",
-               error, rx.ident.id,
-               rx.data[0], rx.data[1], rx.data[2], rx.data[3],
-               rx.data[4], rx.data[5], rx.data[6], rx.data[7]);
+        ZF_LOGV("Recv: id(%x), data(%x, %x, %x, %x, %x, %x, %x, %x)",
+                rx.ident.id,
+                rx.data[0], rx.data[1], rx.data[2], rx.data[3],
+                rx.data[4], rx.data[5], rx.data[6], rx.data[7]);
+    }
+}
+
+int run(void)
+{
+    printf("Start CAN Test\n");
+    can_setup(125000);
+
+    for (int i = 0; true; i++) {
+        request_status();
+        read_status();
+        printf("Iterations: %d\n", i);
     }
 
     return 0;
