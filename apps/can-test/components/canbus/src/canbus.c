@@ -9,7 +9,7 @@
  *
  * @TAG(D61_BSD)
  */
-#define ZF_LOG_LEVEL ZF_LOG_VERBOSE
+#define ZF_LOG_LEVEL ZF_LOG_WARN
 #include <utils/zf_log.h>
 
 /* standard */
