@@ -1,0 +1,59 @@
+/*
+ * Copyright 2014, NICTA
+ *
+ * This software may be distributed and modified according to the terms of
+ * the GNU General Public License version 2. Note that NO WARRANTY is provided.
+ * See "LICENSE_GPLv2.txt" for details.
+ *
+ * @TAG(NICTA_GPL)
+ */
+
+import <std_connector.camkes>;
+
+import <Timer.idl4>;
+
+connector seL4TimeServer {
+    from Procedures template "seL4TimeServer-from.template.c" with 0 threads;
+    to Procedure template "seL4TimeServer-to.template.c";
+}
+
+connector seL4GlobalAsynchCallback {
+    from Event template "seL4GlobalAsynchCallback-from.template.c";
+    to Events template "seL4GlobalAsynchCallback-to.template.c";
+}
+
+component timerbase {
+   hardware;
+   dataport Buf timer_reg;
+   emits DataAvailable irq;
+}
+
+component TimeServerNVTMR {
+    has mutex time_server;
+
+    provides Timer the_timer;
+    emits Notification timer_notification;
+
+    // interfaces for NVTMR hardware
+    dataport Buf timer_reg;
+    consumes DataAvailable irq;
+
+    //attribute int nvtmr_irq;
+    attribute int nvtmr_number;
+    attribute int timers_per_client;
+}
+
+/*
+    configuration {
+        timer_hw.timer_reg_attributes = "0x12DD0000:0x1000";  //Paddr of regs 
+        timer_hw.irq_attributes = 72;  //Timer interrupt
+        time_server.timers_per_client = 6;
+    }
+*/
+
+/*
+        client.timer_attributes = 5;
+        client.timer_global_endpoint = "client_timer";
+        client.timer_complete_global_endpoint = "client_timer";
+*/
+

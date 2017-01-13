@@ -47,7 +47,11 @@
     <linkfile dest="apps/uart-test" src="apps/uart-test"/> 
     <linkfile dest="apps/uart-test-client" src="apps/uart-test-client"/> 
     <linkfile dest="apps/can-test" src="apps/can-test"/> 
+    <linkfile dest="apps/timer_tk1" src="apps/timer_tk1"/> 
   </project>
+
+  <project name="global-components.git" path="projects/global-components" remote="seL4-projects" revision="next"/>
+
   <project name="util_libs.git" path="projects/util_libs">
     <linkfile dest="libs/libcpio" src="libcpio"/>
     <linkfile dest="libs/libelf" src="libelf"/>
