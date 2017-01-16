@@ -86,8 +86,8 @@ get_slave(int id)
     return NULL;
 }
 
-static inline void
-chip_select(spi_bus_t* slave, int state)
+void
+chip_select(const spi_slave_config_t* cfg, int state)
 {
     gpio_spi_can1_cs(state);
 }
@@ -128,7 +128,7 @@ spi__init(void)
     clkcar_spi_clk_init();
 
     /* Initialise the SPI bus */
-    err = tegra_spi_init(SPI_PORT, spi1_reg, NULL, &clock_sys, &spi_bus);
+    err = tegra_spi_init(SPI_PORT, spi1_reg, chip_select, NULL, &clock_sys, &spi_bus);
     assert(!err);
     if (err) {
         ZF_LOGE("Failed to initialise SPI port");
@@ -153,9 +153,7 @@ do_spi_transfer(const struct spi_slave* slave, void* txbuf, unsigned int wcount,
         spi_prepare_transfer(spi_bus, &slave->cfg);
         cur_slave_id = slave->id;
     }
-    ZF_LOGD("About to call chip_select()");
-    chip_select(spi_bus, SPI_CS_ASSERT);
-    ZF_LOGD("Chip select done");
+
     /* Begin the transfer */
     spi_mutex_lock();
     ret = spi_xfer(spi_bus, txbuf, wcount, rxbuf, rcount, spi_complete_callback, &status);
@@ -165,8 +163,7 @@ do_spi_transfer(const struct spi_slave* slave, void* txbuf, unsigned int wcount,
         bus_sem_wait();
         ret = status;
     }
-    ZF_LOGD("Releasing chip select");
-    chip_select(spi_bus, SPI_CS_RELEASE);
+
     return ret;
 }
 
