@@ -45,6 +45,7 @@ menu "Applications"
     source "apps/uart-test-client/Kconfig"
     source "apps/can-test/Kconfig"
     source "apps/timer_tk1/Kconfig"
+    source "apps/music/Kconfig"
 endmenu
 
 source "tools/camkes/Kconfig"
