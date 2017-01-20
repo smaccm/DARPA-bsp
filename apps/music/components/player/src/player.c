@@ -11,59 +11,142 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <platsupport/delay.h>
 #include <camkes.h>
 
-void play(int freqHz, int durationMs) {
-    if (freqHz == 0) {
+double duty_cycle = 0.75;
+
+void playNote(double freqHz, int durationMs) {
+    if (freqHz == 0.0) {
         ps_mdelay(durationMs);
         return;
     }
 
-    int halfPeriodUs = 500000 / freqHz;
-    int count = (1000 * durationMs) / (2 * halfPeriodUs);
+    double periodUs = 1000000.0 / freqHz;
+    int count = 1000 * durationMs / periodUs;
     for (int i = 0; i < count; i++) {
-        gpio_spi_can1_cs(0);
-        ps_udelay(halfPeriodUs);
         gpio_spi_can1_cs(1);
-        ps_udelay(halfPeriodUs);
+        ps_udelay(duty_cycle * periodUs);
+        gpio_spi_can1_cs(0);
+        ps_udelay((1 - duty_cycle) * periodUs);
     }
 }
 
+void playSong(char *song) {
+    int i = 0;
+    while (song[i] != ':') {
+        i++;
+    }
+    i += 3;
+
+    int default_duration = atoi(&song[i]);
+    while (song[i] != ',') {
+        i++;
+    }
+    i += 3;
+
+    int default_octave = song[i] - '0';
+    i += 4;
+    
+    int bpm = atoi(&song[i]);
+    
+    while (song[i] != ':') {
+        i++;
+    }
+    i++;
+
+    int len = strlen(song);
+    while (i < len) {
+        int duration = default_duration;
+        if ('0' <= song[i] && song[i] <= '9') {
+            duration = atoi(&song[i]);
+        }
+        while ('0' <= song[i] && song[i] <= '9') {
+            i++;
+        }
+
+        int dot = 0;
+        if (song[i] == '.') {
+            dot = 1;
+            i++;
+        }
+
+        // http://electronic-setup.blogspot.com/2010/11/nokia-rttl-frequencies-hz.html
+        double freq = 0;
+        if (song[i+1] == '#') {
+            switch (song[i]) {
+            case 'a': freq = 233.082; break;
+            case 'c': freq = 277.183; break;
+            case 'd': freq = 311.127; break;
+            case 'f': freq = 369.994; break;
+            case 'g': freq = 415.305; break;
+            }
+            i += 2;
+        } else {
+            switch (song[i]) {
+            case 'a': freq = 220.000; break;
+            case 'b': freq = 246.942; break;
+            case 'c': freq = 261.626; break;
+            case 'd': freq = 293.665; break;
+            case 'e': freq = 329.628; break;
+            case 'f': freq = 349.228; break;
+            case 'g': freq = 391.995; break;
+            }
+            i++;
+        }
+
+        if (song[i] == '.') {
+            dot = 1;
+            i++;
+        }
+
+        int octave = default_octave;
+        if ('0' <= song[i] && song[i] <= '9') {
+            octave = atoi(&song[i]);
+        }
+        while ('0' <= song[i] && song[i] <= '9') {
+            i++;
+        }
+
+        if (song[i] == '.') {
+            dot = 1;
+            i++;
+        }
+
+        float real_freq = freq;
+        while (octave > 4) {
+            real_freq *= 2;
+            octave--;
+        }
+
+        int real_duration = 4 * 60 * 1000 / (bpm * duration);
+        if (dot) {
+            real_duration *= 1.5;
+        }
+
+        playNote(real_freq, real_duration);
+        i++;
+    }
+}
+
+#define RIDE "Ride:d=4,o=5,b=240:a,32e,8a,c6,8p,a,8p,c6,32a,8c6,e6,8p,c6,8p,e6,32c6,8e6,g6,8p,g,8p,c6,32g,8c6,2e6,p"
+
+#define SMB "smb:d=4,o=5,b=100:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g,8p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,16p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16c7,16p,16c7,16c7,p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16d#6,8p,16d6,8p,16c6"
+
+#define MI "MissionImp:d=16,o=6,b=95:32d,32d#,32d,32d#,32d,32d#,32d,32d#,32d,32d,32d#,32e,32f,32f#,32g,g,8p,g,8p,a#,p,c7,p,g,8p,g,8p,f,p,f#,p,g,8p,g,8p,a#,p,c7,p,g,8p,g,8p,f,p,f#,p,a#,g,2d,32p,a#,g,2c#,32p,a#,g,2c,a#5,8c,2p,32p,a#5,g5,2f#,32p,a#5,g5,2f,32p,a#5,g5,2e,d#,8d"
+
 int run(void) {
     // Close enough
-    ps_cpufreq_hint(680 * 1000 * 1000);
-
-    int baseDuration = 1500;
+    ps_cpufreq_hint(668 * 1000 * 1000);
 
     while (1) {
-        play(440, baseDuration / 4);
-        play(659, baseDuration / 32);
-        play(440, baseDuration / 8);
-        play(1046, baseDuration / 4);
-        play(0, baseDuration / 8);
-        play(440, baseDuration / 4);
-        play(0, baseDuration / 8);
-        play(1046, baseDuration / 4);
-        play(440, baseDuration / 32);
-        play(1046, baseDuration / 8);
-        play(1318, baseDuration / 4);
-        play(0, baseDuration / 8);
-        play(1046, baseDuration / 4);
-        play(0, baseDuration / 8);
-        play(1318, baseDuration / 4);
-        play(1046, baseDuration / 32);
-        play(1318, baseDuration / 8);
-        play(1568, baseDuration / 4);
-        play(0, baseDuration / 8);
-        play(784, baseDuration / 4);
-        play(0, baseDuration / 8);
-        play(1046, baseDuration / 4);
-        play(784, baseDuration / 32);
-        play(1046, baseDuration / 8);
-        play(1318, baseDuration / 2);
-        play(0, baseDuration / 4);
-
+        playSong(RIDE);
+        ps_sdelay(2);
+        playSong(SMB);
+        ps_sdelay(2);
+        playSong(MI);
         ps_sdelay(2);
     }
 }
