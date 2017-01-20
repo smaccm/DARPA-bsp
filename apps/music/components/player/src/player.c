@@ -36,9 +36,12 @@ void playNote(double freqHz, int durationMs) {
 
 void playSong(char *song) {
     int i = 0;
+    int len = strlen(song);
+
     while (song[i] != ':') {
         i++;
     }
+    printf("Playing: %.*s\n", i, song);
     i += 3;
 
     int default_duration = atoi(&song[i]);
@@ -51,13 +54,11 @@ void playSong(char *song) {
     i += 4;
     
     int bpm = atoi(&song[i]);
-    
     while (song[i] != ':') {
         i++;
     }
     i++;
 
-    int len = strlen(song);
     while (i < len) {
         int duration = default_duration;
         if ('0' <= song[i] && song[i] <= '9') {
@@ -143,10 +144,10 @@ int run(void) {
 
     while (1) {
         playSong(RIDE);
-        ps_sdelay(2);
+        ps_sdelay(3);
         playSong(SMB);
-        ps_sdelay(2);
+        ps_sdelay(3);
         playSong(MI);
-        ps_sdelay(2);
+        ps_sdelay(3);
     }
 }
