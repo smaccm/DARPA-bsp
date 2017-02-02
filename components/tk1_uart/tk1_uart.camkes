@@ -11,6 +11,7 @@
  */
 
 import <uart.idl4>;
+import <gen_fwd.idl4>;
 
 component tk1_uart {
     /* Public to client: procedural interface. */
@@ -49,4 +50,7 @@ component tk1_uart {
 
     /* Uses the Clkcar component to set up UART clocks. */
     uses clkcar_inf clkcar;
+
+    /* Interface for VM UART access control */
+    provides gen_fwd_inf gen_fwd;
 }

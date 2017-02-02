@@ -1,25 +1,14 @@
 /*
- * Copyright 2016, Data61
+ * Copyright 2017, Data61
  * Commonwealth Scientific and Industrial Research Organisation (CSIRO)
  * ABN 41 687 119 230.
- *
  * This software may be distributed and modified according to the terms of
  * the BSD 2-Clause license. Note that NO WARRANTY is provided.
  * See "LICENSE_BSD2.txt" for details.
- *
  * @TAG(D61_BSD)
  */
 
-import <gpio.idl4>;
-import <can.idl4>;
-import <clkcar.idl4>;
-
-import <gen_fwd.idl4>;
-
-component clkcar {
-    provides  clkcar_inf  clkcar;
-    dataport  Buf         clkcar_reg;
-
-    /* Interface for VM CAR access control */
-    provides gen_fwd_inf       gen_fwd;
-}
+procedure gen_fwd_inf {
+    uint32_t read(in size_t addr);
+    void write(in size_t addr, in uint32_t value);
+};
