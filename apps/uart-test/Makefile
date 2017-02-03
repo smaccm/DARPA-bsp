@@ -12,13 +12,9 @@ TARGETS := $(notdir ${SOURCE_DIR}).cdl
 
 ADL := uart-test.camkes
 
-include clkcar/clkcar.mk 
+include clkcar/clkcar.mk
 include tk1_uart/tk1_uart.mk
-
-tk1_uart_test_HFILES := \
-    $(patsubst ${SOURCE_DIR}/%,%,$(wildcard ${SOURCE_DIR}/components/tk1_uart_test/include/*.h))
-tk1_uart_test_CFILES := \
-    $(patsubst ${SOURCE_DIR}/%,%,$(wildcard ${SOURCE_DIR}/components/tk1_uart_test/src/*.c))
+include tk1_uart_test/tk1_uart_test.mk
 
 
 include ${PWD}/tools/camkes/camkes.mk

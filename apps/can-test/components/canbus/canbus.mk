@@ -1,5 +1,5 @@
 #
-# Copyright 2016, Data61
+# Copyright 2017, Data61
 # Commonwealth Scientific and Industrial Research Organisation (CSIRO)
 # ABN 41 687 119 230.
 # This software may be distributed and modified according to the terms of
@@ -8,15 +8,9 @@
 # @TAG(D61_BSD)
 #
 
-TARGETS := $(notdir ${SOURCE_DIR}).cdl
+CURRENT_DIR := $(dir $(abspath $(lastword ${MAKEFILE_LIST})))
 
-ADL := can-test.camkes
+canbus_HFILES := $(wildcard ${CURRENT_DIR}/include/*.h) \
+		 $(wildcard ${CURRENT_DIR}/../../../../include/*.h) # global include dir
 
-include spi/spi.mk
-include can/can.mk
-include gpio/gpio.mk
-include clkcar/clkcar.mk
-include canbus/canbus.mk
-
-
-include ${PWD}/tools/camkes/camkes.mk
+canbus_CFILES := $(wildcard ${CURRENT_DIR}/src/*.c)
