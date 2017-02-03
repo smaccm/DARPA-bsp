@@ -37,6 +37,8 @@ menu "Libraries"
     source "libs/libsel4simple/Kconfig"
     source "libs/libsel4simple-default/Kconfig"
     source "libs/libsel4bench/Kconfig"
+    source "libs/libsel4dma/Kconfig"
+    source "libs/libsel4arm-vmm/Kconfig"
 endmenu
 
 menu "Applications"
@@ -45,7 +47,9 @@ menu "Applications"
     source "apps/uart-test-client/Kconfig"
     source "apps/can-test/Kconfig"
     source "apps/timer_tk1/Kconfig"
+    source "apps/vm/Kconfig"
 endmenu
 
+source "tools/elfloader/Kconfig"
 source "tools/camkes/Kconfig"
 source "$COMMON_PATH/Kconfig"

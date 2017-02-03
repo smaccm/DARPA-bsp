@@ -1,0 +1,179 @@
+/*
+ * Copyright 2017, Data61
+ * Commonwealth Scientific and Industrial Research Organisation (CSIRO)
+ * ABN 41 687 119 230.
+ *
+ * This software may be distributed and modified according to the terms of
+ * the BSD 2-Clause license. Note that NO WARRANTY is provided.
+ * See "LICENSE_BSD2.txt" for details.
+ *
+ * @TAG(D61_BSD)
+ */
+
+
+#include <autoconf.h>
+import <std_connector.camkes>;
+
+import <VM/VM.camkes>;
+import <VM/vm_common.camkes>;
+import <spi/spi.camkes>;
+import <can/can.camkes>;
+import <gpio/gpio.camkes>;
+import <clkcar/clkcar.camkes>;
+import <canbus/canbus.camkes>;
+import <tk1_uart_test/tk1_uart_test.camkes>;
+import <tk1_uart/tk1_uart.camkes>;
+import <timer_tk1/timer.camkes>;
+
+component spibase {
+    hardware;
+    dataport Buf spi1_reg;
+    emits DataAvailable spi1_int;
+}
+
+component clkcarbase {
+    hardware;
+    dataport Buf clkcar_reg;
+}
+
+/* UART hardware device component */
+component tk1_uart_dev {
+    hardware;
+    dataport Buf tk1_uart_regs;
+    emits uart_thr_rbr_irq tk1_uarta_irq;
+    emits uart_thr_rbr_irq tk1_uartb_irq;
+    emits uart_thr_rbr_irq tk1_uartc_irq;
+}
+
+
+
+component gpiobase {
+    hardware;
+    dataport Buf gpio1base;
+    dataport Buf pinmuxaux;
+    dataport Buf pinmuxmisc;
+
+    emits IRQGroup5        irq_grp5_int;
+    emits IRQGroup28       irq_grp28_int;
+    emits IRQGroup31       irq_grp31_int;
+    emits EXINT16_31       xint16_31_int;
+}
+
+assembly {
+    composition {
+
+            connection seL4RPCCall genfwduart(from vm.uartfwd, to tk1_uart_obj.gen_fwd);
+            connection seL4RPCCall genfwdclkcar(from vm.clkcarfwd, to clkcar_obj.gen_fwd);
+            /* hardware components */
+            component spibase spibase_obj;
+            component gpiobase gpiobase_obj;
+            component clkcarbase clkcarbase_obj;
+
+            component tk1_uart_dev tk1_uartbase_obj;
+
+            connection seL4HardwareMMIO gpio_mem1 (from gpio_obj.gpio1base, to gpiobase_obj.gpio1base);
+            connection seL4HardwareMMIO gpio_mem2 (from gpio_obj.pinmuxmisc, to gpiobase_obj.pinmuxmisc);
+            connection seL4HardwareMMIO gpio_mem3 (from gpio_obj.pinmuxaux, to gpiobase_obj.pinmuxaux);
+
+
+            /* software components */
+            component spi       spi_obj;
+            component canbus    canbus_obj;
+            component can       can_obj;
+            component gpio      gpio_obj;
+            component clkcar    clkcar_obj;
+
+            component tk1_uart  tk1_uart_obj;
+            component tk1_uart_test test_fn;
+
+
+            /* UART MMIO dataport */
+            connection seL4HardwareMMIO tk1_uart_mmio (from tk1_uart_obj.tk1_uart_regs, to tk1_uartbase_obj.tk1_uart_regs);
+            // connection seL4HardwareMMIO tk1_uart_mmio1 (from uart_FWD.hwbase, to tk1_uartbase_obj.tk1_uart_regs);
+            /* Test component's connections to the UART's component */
+            connection seL4RPCCall test_fn_to_tk1_uart_uart_inf (from test_fn.tk1_uart, to tk1_uart_obj.tk1_uart);
+            /* UART component's connection to the clock controller component */
+            connection seL4RPCCall tk1_uart_to_clkcar_clkcar_inf (from tk1_uart_obj.clkcar, to clkcar_obj.clkcar);
+
+
+            connection seL4HardwareMMIO spi1_mem (from spi_obj.spi1_reg, to spibase_obj.spi1_reg);
+            connection seL4HardwareMMIO clkcar_mem (from clkcar_obj.clkcar_reg, to clkcarbase_obj.clkcar_reg);
+
+            /* Can driver */
+
+            connection seL4RPC can_spi(from can_obj.spi, to spi_obj.spi);
+            connection seL4RPCCall clk_spi(from spi_obj.clkcar, to clkcar_obj.clkcar);
+
+            connection seL4SharedData can_spi_channel (from can_obj.spi_can, to spi_obj.spi1_can);
+            connection seL4Notification gpio_can_int(from gpio_obj.CAN1Int, to can_obj.Int);
+            connection seL4Notification gpio_can_int_ack(from can_obj.IntAck, to gpio_obj.CANIntAck);
+
+
+            connection seL4RPC gpio_cs(from spi_obj.gpio, to gpio_obj.gpio);
+
+
+            /* CAN Application */
+            connection seL4RPCCall canbus_can (from canbus_obj.can,  to can_obj.can);
+            connection seL4SharedData canbus_can_channel(from canbus_obj.can_buf, to can_obj.can_buf);
+            connection seL4Notification txb0_ack(from can_obj.txb0_ack, to canbus_obj.txb0_ack);
+            connection seL4Notification txb1_ack(from can_obj.txb1_ack, to canbus_obj.txb1_ack);
+            connection seL4Notification txb2_ack(from can_obj.txb2_ack, to canbus_obj.txb2_ack);
+            connection seL4SharedData canbus_spi_channel(from canbus_obj.spi1_client, to spi_obj.spi1_client);
+
+            /* Interrupts */
+            connection seL4HardwareInterrupt gpio_grp5_irq(from gpiobase_obj.irq_grp5_int, to gpio_obj.irq_grp5_int);
+            connection seL4HardwareInterrupt spi1_irq(from spibase_obj.spi1_int, to spi_obj.spi1_int);
+
+            /* Test component's shmem dataport connections to UARTA dataport */
+            connection seL4SharedData test_fn_to_tk1_uarta_tx (from test_fn.tk1_uarta_tx_buff, to tk1_uart_obj.tk1_uarta_tx_buff);
+            connection seL4SharedData test_fn_to_tk1_uarta_rx (from test_fn.tk1_uarta_rx_buff, to tk1_uart_obj.tk1_uarta_rx_buff);
+            /* Test component's shmem dataport connections to UARTB dataport */
+            connection seL4SharedData test_fn_to_tk1_uartb_tx (from test_fn.tk1_uartb_tx_buff, to tk1_uart_obj.tk1_uartb_tx_buff);
+            connection seL4SharedData test_fn_to_tk1_uartb_rx (from test_fn.tk1_uartb_rx_buff, to tk1_uart_obj.tk1_uartb_rx_buff);
+            /* Test component's shmem dataport connections to UARTC dataport */
+            connection seL4SharedData test_fn_to_tk1_uartc_tx (from test_fn.tk1_uartc_tx_buff, to tk1_uart_obj.tk1_uartc_tx_buff);
+            connection seL4SharedData test_fn_to_tk1_uartc_rx (from test_fn.tk1_uartc_rx_buff, to tk1_uart_obj.tk1_uartc_rx_buff);
+            /* We don't expose UARTD because that's what the kernel uses. */
+            /* UART IRQs */
+            connection seL4HardwareInterrupt tk1_uarta_irq_event (
+                from tk1_uartbase_obj.tk1_uarta_irq,
+                to tk1_uart_obj.tk1_uarta_irq);
+            connection seL4HardwareInterrupt tk1_uartb_irq_event (
+                from tk1_uartbase_obj.tk1_uartb_irq,
+                to tk1_uart_obj.tk1_uartb_irq);
+            connection seL4HardwareInterrupt tk1_uartc_irq_event (
+                from tk1_uartbase_obj.tk1_uartc_irq,
+                to tk1_uart_obj.tk1_uartc_irq);
+
+
+    }
+
+    configuration {
+
+        canbus_obj.priority = 101;
+        vm.priority = 99;
+        spibase_obj.spi1_reg_paddr      = 0x7000d000;
+        spibase_obj.spi1_reg_size       = 0x1000;
+        clkcarbase_obj.clkcar_reg_paddr = 0x60006000;
+        clkcarbase_obj.clkcar_reg_size  = 0x1000;
+        spibase_obj.spi1_int_irq_number = 91;  /* SPI1  interrupt */
+        gpiobase_obj.pinmuxmisc_paddr   = 0x70000000;
+        gpiobase_obj.pinmuxmisc_size    = 0x1000;
+        gpiobase_obj.pinmuxaux_paddr    = 0x70006000;
+        gpiobase_obj.pinmuxaux_size     = 0x1000;
+        gpiobase_obj.gpio1base_paddr    = 0x6000D000;
+        gpiobase_obj.gpio1base_size     = 0x1000;
+        gpiobase_obj.irq_grp5_int_irq_number  = 87;
+
+        /* UART hardware attributes .*/
+        tk1_uartbase_obj.tk1_uart_regs_paddr = 0x70006000;
+        tk1_uartbase_obj.tk1_uart_regs_size = 0x1000;
+
+        /* These irq numbers aren't used by this application, but are included
+         * as a reference. */
+        tk1_uartbase_obj.tk1_uarta_irq_irq_number = 68;
+        tk1_uartbase_obj.tk1_uartb_irq_irq_number = 69;
+        tk1_uartbase_obj.tk1_uartc_irq_irq_number = 78;
+
+    }
+}
