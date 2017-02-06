@@ -94,10 +94,14 @@ bool allow_enbrst(access_request_t *access_request, const clk_register_t *regist
         for (int i = 0; value != 0 && i < 32; i++) {
             int pos = __builtin_ctz(value);
             uint32_t device = base_id + pos;
+            /* Only update register if all bits are allowed registers */
             switch (device) {
-                case CLK_ENB_SPI1:
-                case CLK_ENB_UARTB:
-                    ZF_LOGV("Blocking UARTC/SPI1");
+                case CLK_ENB_UARTD:
+                case CLK_ENB_SDMMC4:
+                case CLK_ENB_USB2:
+                break;
+                default:
+                    ZF_LOGV("Blocking device: %d", device);
                     return false;
                 break;
             }
@@ -113,17 +117,16 @@ bool allow_enbrst(access_request_t *access_request, const clk_register_t *regist
 bool allow_source(access_request_t *access_request, const clk_register_t *register_type) {
     ZF_LOGV("source register");
     switch (register_type->st.clks) {
-        case uartb_r_clk:
-        case spi1_clk_t:
+        case uartd_r_clk:
+        case sdmmc4_r_clk_t:
+            return true;
+        default:
             if (access_request->access_type == WRITE_ACCESS) {
                 ZF_LOGV("Tried to configure clk %d", register_type->st.clks);
                 return false;
             } else {
                 return true;
             }
-        break;
-        default:
-            return true;
     }
     return false;
 }
