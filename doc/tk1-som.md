@@ -75,28 +75,28 @@ Start a serial console program (e.g. `screen`, `minicom`, etc.) listening to the
 
 To access the U-Boot console, boot the TK1-SOM then press any key to stop the boot process.  You should see a prompt, something like:
 
-{{{
+```
 Tegra124 (TK1-SOM) # 
-}}}
+```
 
 ### Option 1: Using tftpboot ###
 
 1. set up a tftp server on the host
 2. connect TK1-SOM to network. If you are connecting the TK1-SOM directly to the host, then manually set the host address to `192.168.0.1`.  We will manually give the TK1-SOM the address `192.168.0.2`
 3. in U-Boot do:
-{{{
+```
 pci enum
 setenv ipaddr 192.168.0.2
 tftpboot ${loadaddr} 192.168.0.1:system.img
 bootelf ${loadaddr}
-}}}
+```
 
 Optionally, you can also set up a DHCP server and automatically provide the TK1-SOM an address.  In this case the U-Boot steps become:
-{{{
+```
 pci enum
 dhcp ${loadaddr} 192.168.0.1:system.img
 bootelf ${loadaddr}
-}}}
+```
 
 #### Starting a tftp server on a Linux ####
 
@@ -104,17 +104,17 @@ bootelf ${loadaddr}
 
 #### Starting a tftp server on a Mac ####
 
-{{{
+```
 sudo launchctl load -F /System/Library/LaunchDaemons/tftp.plist
 sudo launchctl start com.apple.tftpd
-}}}
+```
 
 The default tftp file path is `/private/tftpboot`
 
 Stop the server with:
-{{{
+```
 sudo launchctl unload -F /System/Library/LaunchDaemons/tftp.plist
-}}}
+```
 
 ### Option 2: Using dfu ###
 
@@ -125,27 +125,27 @@ The summary is:
 Configuration steps (do only once):
 
 1. Configure Linux by installing dfu-utils:
-{{{
+```
 sudo apt-get install dfu-utils
-}}}
+```
 2. Configure U-Boot to do dfu boot:
-{{{
+```
 setenv dfu_alt_info "kernel ram $loadaddr 0x1000000"
 saveenv
-}}}
+```
 
 Load and boot seL4 image:
 
 1. attach a USB cable between the TK1-SOM's OTG port and your host
 2. in U-Boot
-{{{
+```
 dfu 0 ram 0
 bootelf ${loadaddr}
-}}}
+```
 3. on host Linux
-{{{
+```
 sudo dfu-util --device 0955:701a -a kernel -D system.img -R
-}}}
+```
 
 ### Option 3: Using USB storage ###
 
@@ -159,16 +159,16 @@ Load and boot seL4 image:
 
 1. plug USB storage device into TK1-SOM USB2 port
 2. in U-Boot:
-{{{
+```
 usb start
 fatload usb 0:1 ${loadaddr} system.img
 bootelf ${loadaddr}
-}}}
+```
 
 Note, if the USB storage is not formatted with FAT, but, e.g., EXT2 then use an appropriate load command, e.g.:
-{{{
+```
 ext2load usb 0:1 ${loadaddr} system.img
-}}}
+```
 
 
 ### Option 4: Using MMC storage ###
@@ -181,9 +181,9 @@ Copy image to MMC storage:
 
 1. attach a USB cable between the TK1-SOM's OTG port and your host
 2. in U-Boot do:
-{{{
+```
 ums mmc 0
-}}}
+```
 A spinning wheel will appear on the console, and the entire MMC will be presented as a USB storage device to your host. 
 3. mount MMS on host if necessary
 4. copy image file (e.g. `system.img`) to USB storage
@@ -192,17 +192,17 @@ A spinning wheel will appear on the console, and the entire MMC will be presente
 Load and boot seL4 image:
 
 1. in U-Boot do:
-{{{
+```
 mmc init
 mmcinfo
 fatload mmc 0 ${loadaddr} system.img
 bootelf ${loadaddr}
-}}}
+```
 
 Note, if the MMC storage is not formatted with FAT, but, e.g., EXT2 then use an appropriate load command, e.g.:
-{{{
+```
 ext2load mmc 0 ${loadaddr} system.img
-}}}
+```
 
 ### Setting U-Boot environment variables for convenience and quicker boot ###
 
@@ -210,19 +210,19 @@ Instead of retyping the U-Boot commands everytime you boot, you can save them as
 
 For example, to save the tftpboot command, do:
 
-{{{
+```
 setenv bootsel4 "tftpboot ${loadaddr} 192.168.0.1:system.img; bootelf ${loadaddr}"
 saveenv
-}}}
+```
 
 Then you can run it with:
-{{{
+```
 run bootsel4
-}}}
+```
 
 Or set it to be the default boot command:
-{{{
+```
 setenv bootcmd "run bootsel4"
 saveenv
-}}}
+```
 
