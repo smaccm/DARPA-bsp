@@ -57,7 +57,7 @@ int run(void)
             ((char *)tk1_uartb_tx_buff)[j] = 'U';
         }
 
-        status = tk1_uart_write(TK1_UARTB_ASYNC, i);
+        status = tk1_uart_write(NV_UARTB_ASYNC, i);
         if (status < i) {
             ZF_LOGE("UART-client: write returned %d when trying to write %d bytes.",
                     status, i);
@@ -68,7 +68,7 @@ int run(void)
         ZF_LOGE("UART-client: Wrote %d bytes.", status);
 
         if (CONFIG_TEST_READ_RESPONSE) {
-            status = read_fixed_length(inbuff, TK1_UARTB_ASYNC, N_ITERATIONS * 2, i);
+            status = read_fixed_length(inbuff, NV_UARTB_ASYNC, N_ITERATIONS * 2, i);
             if (status < 0) {
                 ZF_LOGE("UART-client: read_fixed returned %d when trying to "
                         "read %d bytes.",
