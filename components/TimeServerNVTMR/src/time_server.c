@@ -347,7 +347,7 @@ void post_init()
     config.tmrus_vaddr = (void*)timer_reg + TMRUS_OFFSET;
     config.shared_vaddr = NULL;
     config.irq = irq;
-    timer = tk1_get_timer(&config);
+    timer = nv_get_timer(&config);
     assert(timer);
     irq_acknowledge();
     /* start timer */

@@ -197,19 +197,19 @@ clock_uartc_init(void)
 int
 clkcar_uart_clk_init(int id)
 {
-    assert(id >= TK1_UARTA_ASYNC && id < TK1_UARTD_ASYNC);
+    assert(id >= NV_UARTA_ASYNC && id < NV_UARTD_ASYNC);
 
     /* UART-D isn't used, and because it's held by the kernel, so we don't
      * expose it.
      */
     switch (id) {
-    case TK1_UARTA_ASYNC:
+    case NV_UARTA_ASYNC:
         clock_uarta_init();
         break;
-    case TK1_UARTB_ASYNC:
+    case NV_UARTB_ASYNC:
         clock_uartb_init();
         break;
-    default: /* TK1_UARTC_ASYNC */
+    default: /* NV_UARTC_ASYNC */
         clock_uartc_init();
         break;
     }

@@ -84,7 +84,7 @@ int run(void)
             ssize_t status;
             bool break_out_and_restart = false;
 
-            status = tk1_uart_read(TK1_UARTB_ASYNC, N_ITERATIONS * 2);
+            status = tk1_uart_read(NV_UARTB_ASYNC, N_ITERATIONS * 2);
             if (status < 0) {
                 ZF_LOGE("UART-tests: run: restart loop: read returned %d.",
                         status);
@@ -143,7 +143,7 @@ server_echo_incrementing(int n_iterations, bool do_xor)
     memset(rxdata, 0, sizeof(rxdata));
 
     for (int i = 1; i < n_iterations + 1; i++) {
-        status = read_fixed_length(&rxdata[total_buffered_bytes], TK1_UARTB_ASYNC,
+        status = read_fixed_length(&rxdata[total_buffered_bytes], NV_UARTB_ASYNC,
                                    N_ITERATIONS * 2, i);
 
         if (status < i) {
@@ -176,7 +176,7 @@ server_echo_incrementing(int n_iterations, bool do_xor)
         /* Short delay */
         for (volatile int i = 0; i < 0x100000; i++);
 
-        status = tk1_uart_write(TK1_UARTB_ASYNC, i);
+        status = tk1_uart_write(NV_UARTB_ASYNC, i);
         if (status < 0) {
             ZF_LOGW("UART-tests: Unexpected status from WRITE: stat %d.", status);
             continue;
@@ -210,7 +210,7 @@ server_echo_once(bool do_xor, bool do_poem)
             "\tXOR enabled? %d. Poem? %d.\n",
             do_xor, do_poem);
 
-    status = tk1_uart_read(TK1_UARTB_ASYNC, N_ITERATIONS * 2);
+    status = tk1_uart_read(NV_UARTB_ASYNC, N_ITERATIONS * 2);
     if (status < 0) {
         ZF_LOGE("UART-tests: read returned %d.", status);
         return;
@@ -237,7 +237,7 @@ server_echo_once(bool do_xor, bool do_poem)
         }
     }
 
-    status = tk1_uart_write(TK1_UARTB_ASYNC, n_bytes_to_write);
+    status = tk1_uart_write(NV_UARTB_ASYNC, n_bytes_to_write);
     if (status < 0) {
         ZF_LOGE("UART-tests: write returned %d.", status);
         return;

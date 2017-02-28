@@ -108,8 +108,8 @@ tk1_uart_irq_handler(int uart_id)
 {
     struct cdev_desc *mydev;
 
-    assert(uart_id >= TK1_UARTA_ASYNC && uart_id <= TK1_UARTC_ASYNC);
-    uart_id -= TK1_UARTA_ASYNC;
+    assert(uart_id >= NV_UARTA_ASYNC && uart_id <= NV_UARTC_ASYNC);
+    uart_id -= NV_UARTA_ASYNC;
 
     mydev = &cdevs[uart_id];
     assert(mydev->pinst != NULL);
@@ -150,7 +150,7 @@ tk1_uarta_irq_handle(void)
 {
     int error;
 
-    tk1_uart_irq_handler(TK1_UARTA_ASYNC);
+    tk1_uart_irq_handler(NV_UARTA_ASYNC);
     error = tk1_uarta_irq_acknowledge();
     ZF_LOGE_IF(error != 0, "Failed to acknowledge UART-A IRQ!");
 }
@@ -160,7 +160,7 @@ tk1_uartb_irq_handle(void)
 {
     int error;
 
-    tk1_uart_irq_handler(TK1_UARTB_ASYNC);
+    tk1_uart_irq_handler(NV_UARTB_ASYNC);
     error = tk1_uartb_irq_acknowledge();
     ZF_LOGE_IF(error != 0, "Failed to acknowledge UART-B IRQ!");
 }
@@ -170,7 +170,7 @@ tk1_uartc_irq_handle(void)
 {
     int error;
 
-    tk1_uart_irq_handler(TK1_UARTC_ASYNC);
+    tk1_uart_irq_handler(NV_UARTC_ASYNC);
     error = tk1_uartc_irq_acknowledge();
     ZF_LOGE_IF(error != 0, "Failed to acknowledge UART-C IRQ!");
 }
@@ -181,8 +181,8 @@ tk1_uart_write_cb(ps_chardevice_t* d, enum chardev_status stat,
 {
     int uart_id = d->id;
 
-    assert(uart_id >= TK1_UARTA_ASYNC && uart_id < TK1_UARTD_ASYNC);
-    uart_id -= TK1_UARTA_ASYNC;
+    assert(uart_id >= NV_UARTA_ASYNC && uart_id < NV_UARTD_ASYNC);
+    uart_id -= NV_UARTA_ASYNC;
 
     if (d->write_descriptor.bytes_requested > 0) {
         cdevs[uart_id].do_release_write_sync_mutex = true;
@@ -195,10 +195,10 @@ tk1_uart_write(int uart_num, int nbytes)
     int ret;
 
     /* Don't allow access to UART-D either. */
-    if (uart_num < TK1_UARTA_ASYNC || uart_num >= TK1_UARTD_ASYNC) {
+    if (uart_num < NV_UARTA_ASYNC || uart_num >= NV_UARTD_ASYNC) {
         return -1;
     }
-    uart_num -= TK1_UARTA_ASYNC;
+    uart_num -= NV_UARTA_ASYNC;
 
     if (cdevs[uart_num].tx_shmem_buff == NULL) {
         ZF_LOGE("Dataport not connected!");
@@ -212,8 +212,8 @@ tk1_uart_write(int uart_num, int nbytes)
 
     if (cdevs[uart_num].pinst == NULL) {
 
-        clkcar_uart_clk_init(uart_num + TK1_UARTA_ASYNC);
-        cdevs[uart_num].pinst = ps_cdev_init(uart_num + TK1_UARTA_ASYNC,
+        clkcar_uart_clk_init(uart_num + NV_UARTA_ASYNC);
+        cdevs[uart_num].pinst = ps_cdev_init(uart_num + NV_UARTA_ASYNC,
                                              /* tk1_uart_regs is the MMIO
                                               * mapping dataport.
                                               */
@@ -246,8 +246,8 @@ tk1_uart_read_cb(ps_chardevice_t* d, enum chardev_status stat,
 {
     int uart_id = d->id;
 
-    assert(uart_id >= TK1_UARTA_ASYNC && uart_id < TK1_UARTD_ASYNC);
-    uart_id -= TK1_UARTA_ASYNC;
+    assert(uart_id >= NV_UARTA_ASYNC && uart_id < NV_UARTD_ASYNC);
+    uart_id -= NV_UARTA_ASYNC;
 
     if (d->read_descriptor.bytes_requested > 0) {
         cdevs[uart_id].do_release_read_sync_mutex = true;
@@ -260,10 +260,10 @@ tk1_uart_read(int uart_num, int nbytes)
     int ret;
 
     /* Don't allow access to UART-D either. */
-    if (uart_num < TK1_UARTA_ASYNC || uart_num >= TK1_UARTD_ASYNC) {
+    if (uart_num < NV_UARTA_ASYNC || uart_num >= NV_UARTD_ASYNC) {
         return -1;
     }
-    uart_num -= TK1_UARTA_ASYNC;
+    uart_num -= NV_UARTA_ASYNC;
 
     if (cdevs[uart_num].rx_shmem_buff == NULL) {
         ZF_LOGE("Dataport not connected!");
@@ -277,8 +277,8 @@ tk1_uart_read(int uart_num, int nbytes)
 
 
     if (cdevs[uart_num].pinst == NULL) {
-        clkcar_uart_clk_init(uart_num + TK1_UARTA_ASYNC);
-        cdevs[uart_num].pinst = ps_cdev_init(uart_num + TK1_UARTA_ASYNC,
+        clkcar_uart_clk_init(uart_num + NV_UARTA_ASYNC);
+        cdevs[uart_num].pinst = ps_cdev_init(uart_num + NV_UARTA_ASYNC,
                                              /* tk1_uart_regs is the MMIO
                                               * mapping dataport.
                                               */
