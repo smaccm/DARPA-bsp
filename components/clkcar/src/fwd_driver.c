@@ -96,13 +96,14 @@ bool allow_enbrst(access_request_t *access_request, const clk_register_t *regist
             uint32_t device = base_id + pos;
             /* Only update register if all bits are allowed registers */
             switch (device) {
-                case CLK_ENB_UARTD:
-                case CLK_ENB_SDMMC4:
-                case CLK_ENB_USB2:
+            case CLK_ENB_UARTD:
+            case CLK_ENB_SDMMC4:
+            case CLK_ENB_USB2:
+            case CLK_ENB_USB3:
                 break;
-                default:
-                    ZF_LOGV("Blocking device: %d", device);
-                    return false;
+            default:
+                ZF_LOGV("Blocking device: %d", device);
+                return false;
                 break;
             }
             value &= ~BIT(pos);
@@ -186,7 +187,7 @@ void handle_register(size_t addr, uint32_t *value, access_type_t access_type) {
     clk_register_type_t regtype = tk1_clk_registers[index].reg_type;
 
     if (regtype >= NUM_REGISTER_TYPES || regtype <= CLK_RESERVED) {
-        ZF_LOGE("Invalid register type");
+        ZF_LOGW("Invalid register type");
         return;
     }
 

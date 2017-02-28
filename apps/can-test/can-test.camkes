@@ -85,7 +85,6 @@ assembly {
         connection seL4Notification txb0_ack(from can_obj.txb0_ack, to canbus_obj.txb0_ack);
         connection seL4Notification txb1_ack(from can_obj.txb1_ack, to canbus_obj.txb1_ack);
         connection seL4Notification txb2_ack(from can_obj.txb2_ack, to canbus_obj.txb2_ack);
-        connection seL4SharedData canbus_spi_channel(from canbus_obj.spi1_client, to spi_obj.spi1_client);
 
         /* Interrupts */
         connection seL4HardwareInterrupt gpio_grp5_irq(from gpiobase_obj.irq_grp5_int, to gpio_obj.irq_grp5_int);
