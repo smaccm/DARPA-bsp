@@ -8,6 +8,6 @@
  * @TAG(D61_BSD)
  */
 
-procedure gpio_inf{
-    void spi_can1_cs(in int enable);
+procedure gpio_inf {
+    void set(in int enable);
 };

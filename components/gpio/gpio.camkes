@@ -14,7 +14,8 @@ import <gpio.idl4>;
 import <can.idl4>;
 
 component gpio {
-    provides gpio_inf gpio;
+    provides gpio_inf gpio_spi_can1_cs;
+    provides gpio_inf gpio_usb_vbus_en1;
 
     dataport Buf gpio1base;
     dataport Buf pinmuxmisc;

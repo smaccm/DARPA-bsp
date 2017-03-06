@@ -89,7 +89,7 @@ get_slave(int id)
 void
 chip_select(const spi_slave_config_t* cfg, int state)
 {
-    gpio_spi_can1_cs(state);
+    gpio_spi_can1_cs_set(state);
 }
 
 /**

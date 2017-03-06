@@ -22,6 +22,7 @@ mux_sys_t tegra_mux;
 gpio_t i_spi_can_int;
 gpio_t r_spi_can1_cs;
 gpio_t r_spi_can2_cs;
+gpio_t r_usb_vbus_en1;
 gpio_sys_t gpio_sys;
 
 void irq_grp5_int_handle(void)
@@ -41,7 +42,7 @@ void CANIntAck_handler(void *arg UNUSED)
     irq_grp5_int_acknowledge();
 }
 
-void gpio_spi_can1_cs(const int enable)
+void gpio_spi_can1_cs_set(const int enable)
 {
     if (enable) {
         ZF_LOGD("Enabling chip select");
@@ -52,16 +53,26 @@ void gpio_spi_can1_cs(const int enable)
     }
 }
 
-void gpio__init(void)
+void gpio_usb_vbus_en1_set(const int enable)
+{
+    if (enable) {
+        gpio_set(&r_usb_vbus_en1);
+    } else {
+        gpio_clr(&r_usb_vbus_en1);
+    }
+}
+
+void pre_init(void)
 {
     CANIntAck_reg_callback(CANIntAck_handler, NULL);
 
     ZF_LOGD("Initialising mux");
-    tegra_mux_init(pinmuxmisc, pinmuxaux, &tegra_mux );
+    tegra_mux_init(pinmuxmisc, pinmuxaux, &tegra_mux);
     ZF_LOGD("Mux initialised\nInitialising gpio");
     gpio_init(gpio1base, &tegra_mux, &gpio_sys);
     gpio_new(&gpio_sys, CAN1_INTn, GPIO_DIR_IRQ_FALL, &i_spi_can_int);
     gpio_new(&gpio_sys, CAN1_CS, GPIO_DIR_OUT, &r_spi_can1_cs);
     gpio_new(&gpio_sys, CAN2_CS, GPIO_DIR_OUT, &r_spi_can2_cs);
+    gpio_new(&gpio_sys, USB_VBUS_EN1, GPIO_DIR_OUT, &r_usb_vbus_en1);
     ZF_LOGD("Gpio initialised");
 }

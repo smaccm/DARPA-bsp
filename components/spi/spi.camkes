@@ -13,7 +13,7 @@ import <gpio.idl4>;
 import <clkcar.idl4>;
 
 component spi {
-    uses     gpio_inf       gpio;
+    uses     gpio_inf       gpio_spi_can1_cs;
     uses     clkcar_inf     clkcar;
     provides spi_inf        spi;
     dataport Buf            spi1_reg;
