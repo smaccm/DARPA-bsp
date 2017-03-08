@@ -109,7 +109,7 @@ assembly {
             connection seL4Notification gpio_can_int_ack(from can_obj.IntAck, to gpio_obj.CANIntAck);
 
 
-            connection seL4RPC gpio_cs(from spi_obj.gpio, to gpio_obj.gpio);
+            connection seL4RPC gpio_cs(from spi_obj.gpio_spi_can1_cs, to gpio_obj.gpio_spi_can1_cs);
 
 
             /* CAN Application */
