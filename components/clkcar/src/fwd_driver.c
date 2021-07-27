@@ -244,8 +244,8 @@ void gen_fwd_write(size_t addr, uint32_t value)
         return;
     }
 
-    uint32_t valueupdate = value;
-    handle_register(addr, &valueupdate, WRITE_ACCESS);
+//    uint32_t valueupdate = value;
+//    handle_register(addr, &valueupdate, WRITE_ACCESS);
 }
 
 void gen_fwd__init() {
